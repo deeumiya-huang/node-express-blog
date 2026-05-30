@@ -1,0 +1,27 @@
+<h2>Create Account</h2>
+<p class="subtitle">Get started with your free account today.</p>
+
+<form action="/account/create" method="POST" id="signup-form">
+
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="please enter username" required>
+    </div>
+
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="please enter password" required>
+    </div>
+
+    <div class="input-group">
+        <label for="password2">Enter Password Again</label>
+        <input type="password" id="password2" placeholder="please enter password again" required>
+    </div>
+
+    <button type="submit" class="login-btn">Create Account</button>
+</form>
+
+<div class="form-footer">
+    <p>Already have an account? <a href="/account/login">Sign In</a></p>
+</div>
+
