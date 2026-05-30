@@ -1,0 +1,18 @@
+html {
+    box-sizing: border-box;
+    font-family: "DynaPuff", Arial, sans-serif;
+    font-weight: 600;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit; /* inherit html's border-box, if we need to modify one of the element to be content-box in the future, the pseudo-elements will inherit. */
+    margin: 0;
+    padding: 0;
+    /*outline: 1px solid black;*/
+}
+
+button {
+    cursor: pointer;
+    user-select: none; /* prevent default blue show up when double-clicking. */
+    font-family: "DynaPuff", Arial, sans-serif; /* button didn't automatically inherit html font, so we need to specify it again here! */
+}
