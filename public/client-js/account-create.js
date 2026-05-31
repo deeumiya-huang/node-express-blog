@@ -39,11 +39,15 @@ inputUsername.addEventListener('blur', async function (e) {
         isUsernameValid = false;
     }
 })
+// clear error message when user enter password again
+inputPassword2.addEventListener('input', function (e) {
+    passwordMsg.textContent = '';
+})
 
 form.addEventListener('submit', function (e) {
-
     if (inputPassword.value === inputPassword2.value) {
         isPasswordValid = true;
+        passwordMsg.textContent = '';
     } else {
         passwordMsg.textContent = '❌ Passwords do not match';
         passwordMsg.className = 'msg-error';
