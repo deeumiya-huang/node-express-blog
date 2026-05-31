@@ -10,6 +10,13 @@ async function findUserByUsername(username) {
     return await user[0];
 }
 
+async function createUser(username, hashedPassword) {
+    const db = await database;
+    return await db.query(
+        `insert into web_users (username, password_hash) values (?,?)`,
+        [username, hashedPassword],);
+}
 module.exports = {
     findUserByUsername,
+    createUser,
 };

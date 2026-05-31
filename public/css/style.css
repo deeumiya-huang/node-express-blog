@@ -108,11 +108,15 @@ body {
     text-decoration: underline;
 }
 
-#username-msg, #password-msg {
+#username-msg, #password-msg, #server-msg {
     font-size: 0.8rem;
     margin-top: 6px;
     font-weight: 500;
     transition: color 0.3s ease;
+}
+#server-msg {
+    color: #10b981;
+    margin-bottom: 10px;
 }
 .msg-success {
     color: #10b981;

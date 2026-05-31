@@ -1,3 +1,6 @@
+{{#if message}}
+    <p id="server-msg">{{message}}</p>
+{{/if}}
 <h2>Create Account</h2>
 <p class="subtitle">Get started with your free account today.</p>
 
@@ -5,13 +8,13 @@
 
     <div class="input-group">
         <label for="username">Username</label>
-        <input type="text" id="username" placeholder="please enter username" required>
+        <input type="text" id="username" name="username" placeholder="please enter username" required>
         <p id="username-msg" ></p>
     </div>
 
     <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="please enter password" required>
+        <input type="password" id="password" name="password" placeholder="please enter password" required>
     </div>
 
     <div class="input-group">

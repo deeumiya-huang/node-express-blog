@@ -7,6 +7,7 @@ const {logger} = require("../public/client-js/Logger");
 
 router.get("/login", (req, res) => {
     res.locals.layout = "account";
+    res.locals.message = req.query.message;
     res.render("account/login");
 })
 
@@ -40,7 +41,22 @@ router.post("/login", async function (req, res) {
 
 router.get("/create", function (req, res) {
     res.locals.layout = "account";
+    res.locals.message = req.query.message;
     res.render("account/create");
+})
+
+router.post("/create", async function (req, res) {
+
+    try {
+        const { username, password } = req.body;
+        const saltRounds = 5;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await userDao.createUser(username, hashedPassword);
+        res.redirect("./login?message=Register successfully!");
+    } catch (e) {
+        logger.error("register new account failed.",e);
+        res.redirect("./create?message=Register failed!");
+    }
 })
 
 router.get("/checkUser", async function (req, res) {
