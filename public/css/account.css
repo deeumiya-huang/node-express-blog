@@ -75,7 +75,7 @@ body {
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.login-btn {
+.submit-btn {
     width: 100%;
     padding: 12px;
     background-color: #4f46e5;
@@ -87,7 +87,7 @@ body {
     transition: background-color 0.2s ease;
 }
 
-.login-btn:hover {
+.submit-btn:hover {
     background-color: #4338ca;
 }
 
@@ -115,7 +115,6 @@ body {
     transition: color 0.3s ease;
 }
 #server-msg {
-    color: #10b981;
     margin-bottom: 10px;
 }
 .msg-success {

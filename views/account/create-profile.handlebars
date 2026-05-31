@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/site.css">
+    <link rel="stylesheet" href="/public/css/create-profile.css">
+    <script src="/public/client-js/create-profile.js" defer></script>
+</head>
+<body>
+<div class="profile-card">
+    {{#if failMessage}}
+        <p class="msg-error" id="server-msg">{{failMessage}}</p>
+    {{/if}}
+    {{#if successMessage}}
+        <p class="msg-success" id="server-msg">{{successMessage}}</p>
+    {{/if}}
+    <div class="header-section">
+        <h2>Complete Profile</h2>
+        <p class="subtitle">Just a few more details to get you started</p>
+    </div>
+
+    <form id="profileForm" action="/account/createProfile" method="POST">
+
+        <div class="name-row">
+            <div class="input-group">
+                <label for="forename">Forename</label>
+                <input type="text" id="forename" name="forename" placeholder="Harry" required>
+            </div>
+            <div class="input-group">
+                <label for="surname">Surname</label>
+                <input type="text" id="surname" name="surname" placeholder="Potter" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+        </div>
+
+        <span class="avatar-label">Choose an Avatar</span>
+        <div class="avatar-options">
+            <div class="avatar-circle active" data-avatar="avatar1.png">
+                <img src="/public/assets/avatar/avatar1.png" alt="Avatar 1">
+            </div>
+            <div class="avatar-circle" data-avatar="avatar2.png">
+                <img src="/public/assets/avatar/avatar2.png" alt="Avatar 2">
+            </div>
+            <div class="avatar-circle" data-avatar="avatar3.png">
+                <img src="/public/assets/avatar/avatar3.png" alt="Avatar 3">
+            </div>
+            <div class="avatar-circle" data-avatar="avatar4.png">
+                <img src="/public/assets/avatar/avatar4.png" alt="Avatar 4">
+            </div>
+        </div>
+
+        <input type="hidden" id="selected-avatar" name="selected_avatar" value="avatar1.png">
+
+        <button type="submit" class="submit-btn">Save Profile</button>
+    </form>
+
+</div>
+</body>

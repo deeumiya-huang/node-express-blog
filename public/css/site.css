@@ -1,6 +1,6 @@
 html {
     box-sizing: border-box;
-    font-family: "DynaPuff", Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-weight: 600;
 }
 
@@ -15,4 +15,9 @@ button {
     cursor: pointer;
     user-select: none; /* prevent default blue show up when double-clicking. */
     font-family: "DynaPuff", Arial, sans-serif; /* button didn't automatically inherit html font, so we need to specify it again here! */
+}
+
+input, textarea, button, select {
+    font-family: inherit;
+    font-size: inherit;
 }

@@ -5,43 +5,66 @@ const userDao = require("../db/users-dao.js");
 const bcrypt = require('bcryptjs');
 const {logger} = require("../public/client-js/Logger");
 
+router.use(function (req, res, next) {
+    res.locals.user = req.session.user;
+    next();
+});
+
 router.get("/login", (req, res) => {
-    res.locals.layout = "account";
-    res.locals.message = req.query.message;
-    res.render("account/login");
-})
+    if (req.session.user) {
+        res.redirect("/");
+    } else {
+        res.locals.layout = "account";
+        res.locals.failMessage = req.query.failMessage;
+        res.locals.successMessage = req.query.successMessage;
+        res.render("account/login");
+    }
+});
 
 router.post("/login", async function (req, res) {
     const {username, password} = req.body;
     try {
-        const user = await userDb.getUser(username);
+        const user = await userDao.retrieveUserByUsername(username);
         if (!user) {
-            res.redirect("/login?message=Authentication failed!");
+            res.redirect("/account/login?failMessage=Authentication failed!");
+            return;
         }
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (isMatch) {
+            // user regenerate session to prevent hacker get user's session id before they log in.
             req.session.regenerate((err) => {
-                if (err) return res.redirect("/login?message=Authentication failed!");
+                if (err) return res.redirect("/account/login?failMessage=Authentication failed!");
                 req.session.user = user;
-                res.cookie("client_name", user.name, {
-                    maxAge: 900000,
-                    httpOnly: false,
-                    path: "/"
-                })
                 res.redirect("/");
             })
         } else {
-            res.redirect("/login?message=Authentication failed!");
+            res.redirect("/account/login?failMessage=Authentication failed!");
         }
     } catch (e) {
         console.log("login error:", e);
-        res.status(500).send("Login interface error");
+        res.status(500).send("Login error");
+    }
+});
+
+router.get("/logout", function (req, res) {
+    if (req.session.user) {
+        // delete req.session.user; //todo: delete or destroy?
+        req.session.destroy(function(err) {
+            if(err) {
+                logger.error(err);
+                return res.redirect("/?message=Logout failed");
+            }
+            res.redirect("/account/login?successMessage=Successfully logged out!");
+        });
+    } else {
+        res.redirect("/account/login");
     }
 });
 
 router.get("/create", function (req, res) {
     res.locals.layout = "account";
-    res.locals.message = req.query.message;
+    res.locals.failMessage = req.query.failMessage;
+    res.locals.successMessage = req.query.successMessage;
     res.render("account/create");
 })
 
@@ -51,13 +74,39 @@ router.post("/create", async function (req, res) {
         const { username, password } = req.body;
         const saltRounds = 5;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        await userDao.createUser(username, hashedPassword);
-        res.redirect("./login?message=Register successfully!");
+        const userId = await userDao.createUser(username, hashedPassword);
+        req.session.userId = userId; // for createProfile form to send data with same user id.
+        res.redirect("/account/createProfile")
     } catch (e) {
         logger.error("register new account failed.",e);
-        res.redirect("./create?message=Register failed!");
+        res.redirect("/account/create?failMessage=Register failed!");
     }
 })
+
+router.get("/createProfile", function (req, res) {
+    if (!req.session.userId) {
+        return res.redirect("./create");
+    }
+    res.locals.layout = null;
+    res.render("account/create-profile");
+})
+
+router.post("/createProfile", async function (req, res) {
+    try {
+        const userId = req.session.userId;
+        const { forename, surname, bio, selected_avatar } = req.body;
+        console.log(selected_avatar);
+        await userDao.createUserProfile(userId, forename, surname, bio, selected_avatar);
+
+        delete req.session.userId;
+        res.redirect("/account/login?successMessage=Register successfully!");
+    } catch (e) {
+        logger.error("Save profile failed.", e);
+        res.redirect("/account/createProfile?failMessage=Failed to save profile.");
+    }
+})
+
+
 
 router.get("/checkUser", async function (req, res) {
     const username = req.query.username;
