@@ -12,14 +12,12 @@ CREATE TABLE IF NOT EXISTS web_users (
 );
 
 CREATE TABLE IF NOT EXISTS web_user_profiles (
-    id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL ,
     forename VARCHAR(255) DEFAULT NULL,
     surname VARCHAR(255) DEFAULT NULL ,
     bio TEXT DEFAULT NULL,
     avatar VARCHAR(255) DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY uq_user_id (user_id),
+    PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES web_users(id) ON DELETE CASCADE
 );
 
