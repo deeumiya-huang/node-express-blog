@@ -56,6 +56,7 @@ router.get("/checkUser", async function (req, res) {
         })
     } catch (e) {
         logger.error("can't connect to db", e);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 })
 

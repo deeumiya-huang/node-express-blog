@@ -108,7 +108,21 @@ body {
     text-decoration: underline;
 }
 
-
+#username-msg, #password-msg {
+    font-size: 0.8rem;
+    margin-top: 6px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.msg-success {
+    color: #10b981;
+}
+.msg-error {
+    color: #ef4444;
+}
+.msg-warning {
+    color: #f59e0b;
+}
 @media (max-width: 768px) {
     .main-container {
         width: 90%;
