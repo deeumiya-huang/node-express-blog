@@ -1,8 +1,4 @@
 
-
-    <h1>Hello, {{user.username}}!</h1>
-    <a href="/account/logout">logout</a>
-
 <!-- Desktop Top Navigation Bar -->
 <nav class="navbar-top">
     <div class="nav-container">
@@ -15,22 +11,40 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 <span>Home</span>
             </a>
-            <a href="#" class="nav-item" title="Personal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Personal</span>
-            </a>
-            <a href="#" class="nav-item" title="New Post">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                <span>New Post</span>
-            </a>
-        </div>
+            {{#if user}}
+                <a href="#" class="nav-item" title="Personal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Personal</span>
+                </a>
+                <a href="#" class="nav-item" title="New Post">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>New Post</span>
+                </a>
+            {{/if}}
 
-        <div class="nav-user">
-            <div class="avatar">
-                <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
-            </div>
-            <a class="btn-user" href="/account/login">login</a>
         </div>
+        {{#if user}}
+            <div class="nav-user">
+                <div class="avatar" id="avatar-btn" role="button">
+                    <img src="/public/assets/avatar/avatar2.png" alt="Avatar">
+                </div>
+                <div class="dropdown-menu" id="nav-user-menu">
+                    <a href="#" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Profile
+                    </a>
+                </div>
+                <a class="btn-user" href="/account/logout">logout</a>
+            </div>
+        {{else}}
+            <div class="nav-user">
+                <div class="avatar">
+                    <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+                </div>
+                <a class="btn-user" href="/account/login">login</a>
+            </div>
+        {{/if}}
+
     </div>
 </nav>
 
@@ -91,15 +105,44 @@
     <a href="#" class="mobile-nav-item">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </a>
-    <a href="#" class="mobile-nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </a>
-    <a href="#" class="mobile-nav-item btn-add-mobile">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </a>
-    <a href="#" class="mobile-nav-item">
-        <div class="avatar mobile-avatar">
-            <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+    {{#if user}}
+        <a href="#" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="#" class="mobile-nav-item btn-add-mobile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </a>
+    {{/if}}
+
+    <!-- user -->
+    <div class="mobile-user-container">
+        <div class="mobile-nav-item" id="mobile-avatar-btn" role="button">
+            <div class="avatar">
+                {{#if user}}
+                    <img src="/public/assets/avatar/avatar2.png" alt="Avatar">
+                {{else}}
+                    <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+                {{/if}}
+            </div>
         </div>
-    </a>
+
+        <!-- user menu -->
+        <div class="mobile-dropdown" id="mobile-user-menu">
+        {{#if user}}
+            <a href="#" class="dropdown-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+            </a>
+            <a href="/account/logout" class="dropdown-item logout-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+            </a>
+        {{else}}
+            <a href="/account/login" class="dropdown-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Login
+            </a>
+        {{/if}}
+        </div>
+    </div>
 </nav>
