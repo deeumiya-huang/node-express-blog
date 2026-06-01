@@ -16,7 +16,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <span>Personal</span>
                 </a>
-                <a href="#" class="nav-item" title="New Post">
+                <a href="#" id="new-post" class="nav-item" title="New Post">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     <span>New Post</span>
                 </a>
@@ -47,6 +47,54 @@
 
     </div>
 </nav>
+
+<!-- post modal(default: hidden) -->
+<div id="postModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Create Post</h3>
+            <button id="closePostBtn" class="close-btn">&times;</button>
+        </div>
+
+        <form id="postForm" action="/createPost" method="POST" enctype="multipart/form-data">
+
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="category">Select Category</label>
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Please select...</option>
+                        <option value="mood">Mood</option>
+                        <option value="life">Daily Life</option>
+                        <option value="tech">Technology</option>
+                        <option value="economy">Economy</option>
+                    </select>
+                </div>
+
+                <div class="form-group flex-2">
+                    <label for="title">Post Title</label>
+                    <input type="text" id="title" name="title" placeholder="Enter title here..." required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Content</label>
+                <div id="quill-editor"></div>
+                <input type="hidden" id="content" name="content">
+            </div>
+
+            <div class="form-group">
+                <label for="postImage" class="file-upload-label">Upload Photo</label>
+                <input type="file" id="postImage" name="postImage" accept="image/jpeg, image/png, image/gif, .jpg, .jpeg, .png, .gif" class="file-input">
+                <div id="imagePreview" class="image-preview"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="cancelBtn" class="btn-secondary-outline">Cancel</button>
+                <button type="submit" class="btn-primary">Publish</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <main class="main-container">
 
@@ -109,7 +157,7 @@
         <a href="#" class="mobile-nav-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
-        <a href="#" class="mobile-nav-item btn-add-mobile">
+        <a href="#" class="mobile-nav-item btn-add-mobile" id="new-post2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </a>
     {{/if}}
