@@ -1,5 +1,105 @@
-<div class="body-container">
-    <a href="/account/login">login</a>
+
+
     <h1>Hello, {{user.username}}!</h1>
     <a href="/account/logout">logout</a>
-</div>
+
+<!-- Desktop Top Navigation Bar -->
+<nav class="navbar-top">
+    <div class="nav-container">
+
+        <a href="#" class="logo">Blog</a>
+
+        <!-- Center: Navigation Links -->
+        <div class="nav-menu-center">
+            <a href="#" class="nav-item active" title="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" title="Personal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Personal</span>
+            </a>
+            <a href="#" class="nav-item" title="New Post">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>New Post</span>
+            </a>
+        </div>
+
+        <div class="nav-user">
+            <div class="avatar">
+                <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+            </div>
+            <a class="btn-user" href="/account/login">login</a>
+        </div>
+    </div>
+</nav>
+
+<main class="main-container">
+
+    <!-- Sorting Filter Section -->
+    <div class="filter-section">
+        <label for="sort-select">Sort by: </label>
+        <select id="sort-select" class="sort-dropdown">
+            <option value="latest">Latest</option>
+            <option value="category">Category</option>
+            <option value="username">Username</option>
+            <option value="title">Title</option>
+        </select>
+    </div>
+
+    <!-- Post List -->
+    <section class="post-list">
+
+        <!-- Card  -->
+        <article class="post-card">
+            <div class="post-user">
+                <div class="avatar">
+                    <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+                </div>
+                <div class="user-meta">
+                    <span class="post-author">Harry</span>
+                    <span class="post-time">3 hrs ago</span>
+                </div>
+            </div>
+
+            <div class="post-body">
+                <span class="post-category">Web Development</span>
+                <h2 class="post-title">The Art of Minimalism in Modern Web Design</h2>
+                <p class="post-content">Less is more. In this article, we dive deep into how negative space, soft color palettes, and clean typography can elevate user experience...</p>
+            </div>
+
+            <div class="post-image">
+                <img src="/public/assets/sky1.jpg" alt="Post Image">
+            </div>
+
+            <div class="post-actions">
+                <button class="action-btn" title="Like">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                    <span>1</span>
+                </button>
+                <button class="action-btn" title="Comment">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>1</span>
+                </button>
+            </div>
+        </article>
+    </section>
+</main>
+
+<!-- Mobile Bottom Navigation Bar (Hidden by Default) -->
+<nav class="navbar-bottom">
+    <a href="#" class="mobile-nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </a>
+    <a href="#" class="mobile-nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+    <a href="#" class="mobile-nav-item btn-add-mobile">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </a>
+    <a href="#" class="mobile-nav-item">
+        <div class="avatar mobile-avatar">
+            <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
+        </div>
+    </a>
+</nav>
