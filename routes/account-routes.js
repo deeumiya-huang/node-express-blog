@@ -5,11 +5,13 @@ const userDao = require("../db/users-dao.js");
 const bcrypt = require('bcryptjs');
 const {logger} = require("../public/client-js/Logger");
 
+// check if user already login
 router.use(function (req, res, next) {
     res.locals.user = req.session.user;
     next();
 });
 
+// if user already login, redirect to home page
 router.get("/login", (req, res) => {
     if (req.session.user) {
         res.redirect("/");
@@ -68,6 +70,7 @@ router.get("/create", function (req, res) {
     res.render("account/create");
 })
 
+// after creating new account, redirect user to create their profile
 router.post("/create", async function (req, res) {
 
     try {
@@ -82,7 +85,7 @@ router.post("/create", async function (req, res) {
         res.redirect("/account/create?failMessage=Register failed!");
     }
 })
-
+//todo: deal with createProfile page when user already create new account but cancel this page
 router.get("/createProfile", function (req, res) {
     if (!req.session.userId) {
         return res.redirect("./create");
@@ -106,8 +109,7 @@ router.post("/createProfile", async function (req, res) {
     }
 })
 
-
-
+// let user check if the username already has been used
 router.get("/checkUser", async function (req, res) {
     const username = req.query.username;
     try {
