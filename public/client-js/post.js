@@ -48,7 +48,7 @@ fileInput.addEventListener('change', function () {
             img.src = e.target.result;
             imagePreview.appendChild(img);
         }
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // this will trigger reader.onload event
     }
 });
 
