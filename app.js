@@ -10,7 +10,7 @@ const port = process.env.EXPRESS_PORT || 3000;
 // Setup Handlebars
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars.engine({
-    defaultLayout: "main" //todo: change later
+    defaultLayout: "main"
 }));
 app.set("view engine", "handlebars");
 
@@ -45,6 +45,9 @@ app.use("/account", router);
 
 const mainRouter = require("./routes/main-routes.js");
 app.use(mainRouter);
+
+const postRouter = require("./routes/post-routes.js");
+app.use(postRouter);
 
 app.listen(port, function () {
     console.log(`Web final project listening on http://localhost:${port}/`);
