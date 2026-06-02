@@ -21,17 +21,17 @@ async function retrieveAllPost() {
 }
 
 
-async function retrieveSortedPost(sortBy) {
-    const db = await database;
-    const posts = await db.query(
-        `SELECT p.*, u.username, pr.avatar
-         FROM web_posts p
-         INNER JOIN web_users u ON u.id = p.author_id
-         INNER JOIN web_user_profiles pr ON u.id = pr.user_id
-         ORDER BY ${sortBy} DESC;`
-    );
-    return posts;
-}
+// async function retrieveSortedPost(sortBy) {
+//     const db = await database;
+//     const posts = await db.query(
+//         `SELECT p.*, u.username, pr.avatar
+//          FROM web_posts p
+//          INNER JOIN web_users u ON u.id = p.author_id
+//          INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+//          ORDER BY ${sortBy} DESC;`
+//     );
+//     return posts;
+// }
 
 async function retrieveComments(postId, userId) {
     const db = await database;
@@ -98,6 +98,6 @@ function validateReplyPermission(nodes, currentLevel) {
 module.exports = {
     createPost,
     retrieveAllPost,
-    retrieveSortedPost,
+    // retrieveSortedPost,
     retrieveComments
 };

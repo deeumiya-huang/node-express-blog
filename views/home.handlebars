@@ -113,7 +113,11 @@
     <section class="post-list">
 
         {{#each posts}}
-            <article class="post-card">
+            <article class="post-card"
+                     data-latest="{{this.post_at}}"
+                     data-category="{{this.category}}"
+                     data-username="{{this.username}}"
+                     data-title="{{this.title}}">
                 <div class="post-user">
                     <div class="avatar">
                         <img src="/public/assets/avatar/{{this.avatar}}" alt="Avatar">
