@@ -1,3 +1,4 @@
+
 const database = require("./db-connect.js");
 
 async function findUserByUsername(username) {
@@ -35,9 +36,20 @@ async function createUserProfile(userId, forename, surname, bio, selected_avatar
         [userId, forename, surname, bio, selected_avatar]);
     return result;
 }
+
+async function retrieveProfileById(userId) {
+    const db = await database;
+
+    const profile = await db.query(
+        "select * from web_user_profiles where user_id = ?",
+        [userId]);
+
+    return profile[0];
+}
 module.exports = {
     findUserByUsername,
     createUser,
     retrieveUserByUsername,
-    createUserProfile
+    createUserProfile,
+    retrieveProfileById
 };

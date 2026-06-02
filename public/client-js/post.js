@@ -10,8 +10,7 @@ const quill = new Quill('#quill-editor', {
     modules: {
         toolbar: [
             ['bold', 'italic', 'underline'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            ['clean']
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }]
         ]
     }
 });

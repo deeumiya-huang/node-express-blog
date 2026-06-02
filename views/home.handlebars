@@ -26,7 +26,7 @@
         {{#if user}}
             <div class="nav-user">
                 <div class="avatar" id="avatar-btn" role="button">
-                    <img src="/public/assets/avatar/avatar2.png" alt="Avatar">
+                    <img src="/public/assets/avatar/{{user.profile.avatar}}" alt="Avatar">
                 </div>
                 <div class="dropdown-menu" id="nav-user-menu">
                     <a href="#" class="dropdown-item">
@@ -112,7 +112,45 @@
     <!-- Post List -->
     <section class="post-list">
 
-        <!-- Card  -->
+        {{#each posts}}
+            <article class="post-card">
+                <div class="post-user">
+                    <div class="avatar">
+                        <img src="/public/assets/avatar/{{this.avatar}}" alt="Avatar">
+                    </div>
+                    <div class="user-meta">
+                        <span class="post-author">{{this.username}}</span>
+                        <span class="post-time">{{this.post_at}}</span>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    <span class="post-category">{{this.category}}</span>
+                    <h2 class="post-title">{{this.title}}</h2>
+                    <div class="post-content">{{{this.content}}}</div>
+                </div>
+
+                {{#if this.img_name}}
+                    <div class="post-image">
+                        <a href="/public/assets/post-img/{{this.img_name}}">
+                            <img src="/public/assets/post-thumbnail/{{this.img_name}}" alt="Post Image">
+                        </a>
+                    </div>
+                {{/if}}
+                <div class="post-actions">
+                    <button class="action-btn" title="Like">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        <span>{{this.likes}}</span>
+                    </button>
+                    <button class="action-btn" title="Comment">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span>{{this.comment}}</span>
+                    </button>
+                </div>
+            </article>
+        {{/each}}
+
+        <!-- Card Example -->
         <article class="post-card">
             <div class="post-user">
                 <div class="avatar">
@@ -145,6 +183,7 @@
                 </button>
             </div>
         </article>
+
     </section>
 </main>
 
@@ -167,7 +206,7 @@
         <div class="mobile-nav-item" id="mobile-avatar-btn" role="button">
             <div class="avatar">
                 {{#if user}}
-                    <img src="/public/assets/avatar/avatar2.png" alt="Avatar">
+                    <img src="/public/assets/avatar/{{user.profile.avatar}}" alt="Avatar">
                 {{else}}
                     <img src="/public/assets/avatar/avatar1.png" alt="Avatar">
                 {{/if}}

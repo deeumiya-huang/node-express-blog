@@ -34,9 +34,10 @@ router.post("/login", async function (req, res) {
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (isMatch) {
             // user regenerate session to prevent hacker get user's session id before they log in.
-            req.session.regenerate((err) => {
+            req.session.regenerate(async (err) => {
                 if (err) return res.redirect("/account/login?failMessage=Authentication failed!");
                 req.session.user = user;
+                req.session.user.profile = await userDao.retrieveProfileById(user.id);
                 res.redirect("/");
             })
         } else {

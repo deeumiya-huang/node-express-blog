@@ -8,6 +8,19 @@ async function createPost(post) {
     return result;
 }
 
+async function retrieveAllPost() {
+    const db = await database;
+    const posts = await db.query(
+        `SELECT p.*, u.username, pr.avatar
+         FROM web_posts p
+         INNER JOIN web_users u ON u.id = p.author_id
+         INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+         ORDER BY p.post_at DESC;`,
+    );
+    return posts;
+}
+
 module.exports = {
-    createPost
+    createPost,
+    retrieveAllPost,
 };
