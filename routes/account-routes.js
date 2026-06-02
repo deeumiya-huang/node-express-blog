@@ -99,7 +99,6 @@ router.post("/createProfile", async function (req, res) {
     try {
         const userId = req.session.userId;
         const { forename, surname, bio, selected_avatar } = req.body;
-        console.log(selected_avatar);
         await userDao.createUserProfile(userId, forename, surname, bio, selected_avatar);
 
         delete req.session.userId;

@@ -7,7 +7,6 @@ router.get("/", async (req, res) => {
 
     const posts = await postDao.retrieveAllPost();
     res.locals.posts = posts;
-    console.log(posts);
     res.render("home");
 })
 

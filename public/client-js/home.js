@@ -44,7 +44,6 @@ sortSelect.addEventListener('change', async function () {
         }
 
         const posts = await response.json();
-        console.log(posts);
         renderPosts(posts);
     } catch (error) {
         console.error(error);

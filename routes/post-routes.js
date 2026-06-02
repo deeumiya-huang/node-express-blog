@@ -35,7 +35,6 @@ router.post('/createPost', upload.single('postImage'), async (req, res) => {
             allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
             allowedAttributes: {} // doesn't allow any dirty attribute like <img onerror="...">
         });
-        console.log({ category, title, cleanContent });
 
         // store into db
         const post = {
