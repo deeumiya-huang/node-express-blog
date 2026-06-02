@@ -33,8 +33,71 @@ async function retrieveSortedPost(sortBy) {
     return posts;
 }
 
+async function retrieveComments(postId, userId) {
+    const db = await database;
+    const comments = await db.query(
+        `SELECT * FROM web_comments WHERE post_id = ?`,
+        [postId]
+    )
+    const resultTree = buildCommentTree(comments, userId);
+    console.log(JSON.stringify(resultTree, null, 2));
+    return resultTree;
+
+}
+
+function buildCommentTree(flatList, userId) {
+    const map = {};
+    const tree = [];
+
+    flatList.forEach(item => {
+        map[item.id] = {
+            id: item.id,
+            content: item.content,
+            post_at: item.post_at,
+            permissions: {
+                edit: item.commenter_id === userId,   // can only modify and delete personal comment
+                delete: item.commenter_id === userId,
+                reply: true // default true
+            },
+            comments: [] // sub-comments
+        };
+    });
+
+    flatList.forEach(item => {
+        const currentItem = map[item.id];
+
+        if (item.parent_id !== null) {
+            const parent = map[item.parent_id];
+            if (parent) {
+                parent.comments.push(currentItem);
+            }
+        } else {
+            tree.push(currentItem);
+        }
+    });
+
+    validateReplyPermission(tree, 1); // check from level one
+
+    return tree;
+}
+
+// check level and make reply false for the third levels
+function validateReplyPermission(nodes, currentLevel) {
+    nodes.forEach(node => {
+        if (currentLevel >= 3) {
+            node.permissions.reply = false;
+            node.comments = []; // clear all sub-comments in third level
+        }
+
+        if (node.comments.length > 0) {
+            validateReplyPermission(node.comments, currentLevel + 1);
+        }
+    });
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
-    retrieveSortedPost
+    retrieveSortedPost,
+    retrieveComments
 };

@@ -22,4 +22,9 @@ router.get("/sortPosts", async (req, res) => {
     res.json(posts);
 })
 
+router.get("/getComments", async (req, res) => {
+    const postId = req.query.postId;
+    const comments = await postDao.retrieveComments(postId);
+    res.json(comments);
+})
 module.exports = router;

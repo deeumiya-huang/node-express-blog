@@ -87,13 +87,36 @@ function renderPosts(posts) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                         <span>${post.likes}</span>
                     </button>
-                    <button class="action-btn" title="Comment">
+                    <a href="/getComments" class="action-btn comment-link" data-post-id="${post.id}" title="Comment">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         <span>${post.comment}</span>
-                    </button>
+                    </a>
                 </div>
         `;
         postsContainer.appendChild(postItem);
     })
 }
 
+const commentsLinks = document.querySelectorAll('.comment-link');
+commentsLinks.forEach(commentLink => {
+    commentLink.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const postId = this.dataset.postId;
+        try {
+            const response = await fetch(`/getComments?postId=${postId}`);
+            if (!response.ok) {
+                throw new Error('server error');
+            }
+
+            const treeComments = await response.json();
+            renderComments(treeComments);
+
+        } catch (error) {
+            console.error('fetch comments', error);
+        }
+    })
+})
+const commentsContainer = document.querySelector('.post-comments-container');
+function renderComments(comments) {
+    commentsContainer.appendChild(comments);
+}
