@@ -5,9 +5,23 @@
             <span class="comment-username">{{data.author.username}}</span>
             <span class="comment-date">{{data.post_at}}</span>
         </div>
-        <p class="comment-text">{{data.content}}</p>
+        <div class="comment-content-display active">
+            <p class="comment-text">{{data.content}}</p>
+        </div>
+
+        {{#if data.permissions.edit}}
+            <div class="edit-form-container">
+                <form action="/editComment/{{postId}}/{{data.id}}" method="post" class="edit-comment-form">
+                <textarea name="content" required>{{data.content}}</textarea>
+                <div class="edit-form-actions">
+                    <button type="button" class="btn-cancel-edit">Cancel</button>
+                    <button type="submit">Save</button>
+                </div>
+                </form>
+            </div>
+        {{/if}}
         {{#if @root.user}}
-            <div class="comment-actions">
+            <div class="comment-actions active">
                 {{#if data.permissions.reply}}
                     <button type="button" class="btn-reply toggle-reply">Reply</button>
                 {{else}}
@@ -15,8 +29,7 @@
                 {{/if}}
 
                 {{#if data.permissions.edit}}
-                    <a href="/article/{{postId}}/comment/edit?id={{data.id}}" class="btn-edit">Edit</a>
-                {{else}}
+                    <button type="button" class="btn-edit toggle-edit">Edit</button>                {{else}}
                     <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>
                 {{/if}}
 

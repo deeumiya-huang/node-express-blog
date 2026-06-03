@@ -376,11 +376,11 @@ a {
     transition: border-color 0.2s;
 }
 
-.main-comment-form input:focus, .reply-comment-form input:focus {
+.main-comment-form input:focus, .reply-comment-form input:focus, .edit-comment-form input:focus {
     border-color: var(--primary-color);
 }
 
-.main-comment-form button, .reply-comment-form button[type="submit"] {
+.main-comment-form button, .reply-comment-form button[type="submit"], .edit-comment-form button[type="submit"] {
     background: var(--primary-color);
     color: white;
     border: none;
@@ -391,7 +391,7 @@ a {
     font-size: 14px;
 }
 
-.main-comment-form button:hover, .reply-comment-form button[type="submit"]:hover {
+.main-comment-form button:hover, .reply-comment-form button[type="submit"]:hover, .edit-comment-form button[type="submit"]:hover {
     background: var(--secondary-color);
 }
 
@@ -435,15 +435,24 @@ a {
     line-height: 1.5;
     padding-left: 2px;
 }
+.comment-content-display {
+    display: none;
+}
+.comment-content-display.active {
+    display: block;
+}
 
 /* ==========================================
    comment actions
    ========================================== */
 .comment-actions {
-    display: flex;
+    display: none;
     gap: 16px;
     font-size: 13px;
     margin-bottom: 8px;
+}
+.comment-actions.active {
+    display: flex;
 }
 
 .comment-actions a, .comment-actions button {
@@ -469,28 +478,28 @@ a {
     cursor: not-allowed;
 }
 
-.reply-form-container {
+.reply-form-container, .edit-form-container  {
     display: none;
     margin-top: 12px;
     border-left: 3px solid var(--primary-color);
     padding-left: 10px;
 }
-.reply-form-container.active {
+.reply-form-container.active, .edit-form-container.active {
     display: block;
 }
 
-.reply-comment-form {
+.reply-comment-form .edit-comment-form {
     margin-bottom: 0;
     background: #fff;
     border: 1px solid #eee;
 }
 
-.reply-form-actions {
+.reply-form-actions, .edit-form-actions {
     display: flex;
     gap: 8px;
 }
 
-.btn-cancel-reply {
+.btn-cancel-reply, .btn-cancel-edit {
     background: #e4e6eb;
     color: #050505;
     border: none;
@@ -499,8 +508,23 @@ a {
     font-size: 13px;
 }
 
-.btn-cancel-reply:hover {
+.btn-cancel-reply:hover, .btn-cancel-edit:hover {
     background: #d8dadf;
+}
+
+.edit-comment-form textarea {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    height: 40px;
+    line-height: 20px;
+}
+
+.edit-comment-form textarea:focus {
+    border-color: var(--primary-color);
 }
 
 /* ==========================================

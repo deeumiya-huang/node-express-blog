@@ -12,6 +12,7 @@ const sanitizeHtml = require('sanitize-html');
 const postDao = require("../db/post-dao.js");
 const auth = require("../middleware/auth.js");
 
+//check user before every request in this router file
 router.use(auth.verifyAuthenticated);
 
 //todo: check user before create post
@@ -83,11 +84,29 @@ router.post("/deleteComment/:postId/:commentId", async (req, res) => {
             res.redirect(`/#post-${postId}`);
         } else {
             console.log("Delete failed: Unauthorized or ID not found");
-            res.status(403).send('Unauthorized or Comment not found');
+            res.redirect(`/#post-${postId}?error=delete_failed`);
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Comment delete failed');
+        console.log("Delete failed",error);
+        res.redirect(`/#post-${postId}?error=delete_failed`);
+    }
+})
+
+router.post("/editComment/:postId/:commentId", async (req, res) => {
+    const { postId, commentId } = req.params;
+    const content = req.body.content;
+    const userId = req.session.user.id;
+    try {
+        const result = await postDao.editComment(postId, commentId, content, userId);
+        if (result.affectedRows !== 0) {
+            console.log("Comment successfully edit");
+            res.redirect(`/#post-${postId}`);
+        } else {
+            console.log("Edit Comment failed: Unauthorized or ID not found");
+            res.redirect(`/#post-${postId}?error=edit_failed`);        }
+    } catch (error) {
+        console.log("Edit Comment failed",error);
+        res.redirect(`/#post-${postId}?error=edit_comment_failed`);
     }
 })
 

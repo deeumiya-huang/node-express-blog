@@ -175,6 +175,18 @@ async function deleteComment(postId, commentId, userId) {
     return result;
 }
 
+async function editComment(postId, commentId, content, userId) {
+    const db = await database;
+    const result = await db.query(
+        `UPDATE web_comments 
+             SET content = ? ,
+                post_at = NOW()
+             WHERE id = ? AND post_id = ? AND commenter_id = ?;`,
+        [content, commentId, postId, userId]
+    )
+    return result;
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
@@ -185,5 +197,6 @@ module.exports = {
     getPostAuthorId,
     deletePost,
     editPost,
-    deleteComment
+    deleteComment,
+    editComment
 };
