@@ -31,4 +31,18 @@ async function getPostsComments(posts) {
     return await Promise.all(promises);
 }
 
+router.post("/createComment", async (req, res) => {
+    try {
+        const {post_id, parent_id, content} = req.body;
+        // for those comment under post directly, make it null rather than undefined and send to DB.
+        const verifiedParentId = parent_id ? parent_id : null;
+        const userId = req.session.user.id;
+        const result = await postDao.createComment(post_id, userId, content, verifiedParentId);
+        res.redirect(`/#post-${post_id}`);
+    } catch (e) {
+        console.error(e);
+        res.redirect("/");
+    }
+})
+
 module.exports = router;

@@ -40,7 +40,6 @@ async function retrieveComments(postId, userId) {
         [postId]
     )
     const resultTree = await buildCommentTree(comments, userId);
-    console.log(JSON.stringify(resultTree, null, 2));
     return resultTree;
 
 }
@@ -110,9 +109,18 @@ async function getAuthorInfo(authorId) {
     return profile[0];
 }
 
+async function createComment(postId, userId, content, parentId) {
+    const db = await database;
+    const result = await db.query(
+        `insert into web_comments (post_id, commenter_id, content, parent_id) values (?,?,?,?)`,
+        [postId, userId, content, parentId]
+    );
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
     // retrieveSortedPost,
-    retrieveComments
+    retrieveComments,
+    createComment
 };

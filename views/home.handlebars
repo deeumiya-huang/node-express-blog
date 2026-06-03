@@ -113,7 +113,7 @@
     <section class="post-list">
 
         {{#each posts}}
-            <article class="post-card"
+            <article class="post-card" id="post-{{this.id}}"
                      data-latest="{{this.post_at}}"
                      data-category="{{this.category}}"
                      data-username="{{this.username}}"
@@ -153,9 +153,10 @@
                 </div>
                 <div class="post-comments-container">
                     {{#if @root.user}}
-                        <form action="/article/{{this.id}}/comment/create" method="POST" class="main-comment-form">
+                        <form action="/createComment" method="POST" class="main-comment-form">
                             <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="User Avatar" class="user-avatar-sm">
                             <span class="comment-username">{{@root.user.username}}</span>
+                            <input type="hidden" name="post_id" value="{{this.id}}">
                             <input type="text" name="content" placeholder="leave a comment for this post..." required>
                             <button type="submit">publish</button>
                         </form>

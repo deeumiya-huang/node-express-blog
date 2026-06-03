@@ -29,8 +29,10 @@
 
             {{#if data.permissions.reply}}
                 <div class="reply-form-container"> <!-- todo -->
-                    <form action="/article/{{postId}}/comment/create?parent={{data.id}}" method="POST" class="reply-comment-form">
+                    <form action="/createComment" method="POST" class="reply-comment-form">
                     <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="Your Avatar" class="user-avatar-xs">
+                    <input type="hidden" name="parent_id" value="{{data.id}}">
+                    <input type="hidden" name="post_id" value="{{postId}}">
                     <input type="text" name="content" placeholder="reply for {{data.author.username}}..." required>
                     <div class="reply-form-actions">
                         <button type="button" class="btn-cancel-reply">cancel</button>
