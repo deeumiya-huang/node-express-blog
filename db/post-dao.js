@@ -39,12 +39,15 @@ async function retrieveComments(postId, userId) {
         `SELECT * FROM web_comments WHERE post_id = ?`,
         [postId]
     )
-    const resultTree = await buildCommentTree(comments, userId);
+    const authorId = await getPostAuthorId(postId);
+    let isAuthor = String(userId) === String(authorId);
+
+    const resultTree = await buildCommentTree(comments, userId, isAuthor);
     return resultTree;
 
 }
 
-async function buildCommentTree(flatList, userId) {
+async function buildCommentTree(flatList, userId, isAuthor) {
     const map = {};
     const tree = [];
 
@@ -58,7 +61,7 @@ async function buildCommentTree(flatList, userId) {
             post_at: item.post_at,
             permissions: {
                 edit: item.commenter_id === userId,
-                delete: item.commenter_id === userId,
+                delete: isAuthor || item.commenter_id === userId,
                 reply: true
             },
             comments: []
@@ -80,8 +83,8 @@ async function buildCommentTree(flatList, userId) {
         }
     });
 
-    validateReplyPermission(tree, 1); // check from level one
 
+    validateReplyPermission(tree, 1); // check from level one
     return tree;
 }
 
@@ -97,6 +100,16 @@ function validateReplyPermission(nodes, currentLevel) {
             validateReplyPermission(node.comments, currentLevel + 1);
         }
     });
+}
+
+async function getPostAuthorId(postId) {
+    const db = await database;
+    const result = await db.query(
+        `select author_id from web_posts where id = ?`,
+        [postId]
+    );
+    return result[0] ? String(result[0].author_id) : null;
+
 }
 
 async function getAuthorInfo(authorId) {

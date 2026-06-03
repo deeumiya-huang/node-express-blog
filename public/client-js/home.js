@@ -97,29 +97,6 @@ document.addEventListener('click', (event) => {
 //     })
 // }
 
-const commentsLinks = document.querySelectorAll('.comment-link');
-commentsLinks.forEach(commentLink => {
-    commentLink.addEventListener('click', async function (event) {
-        event.preventDefault();
-        const postId = this.dataset.postId;
-        try {
-            const response = await fetch(`/getComments?postId=${postId}`);
-            if (!response.ok) {
-                throw new Error('server error');
-            }
-
-            const treeComments = await response.json();
-            renderComments(treeComments);
-
-        } catch (error) {
-            console.error('fetch comments', error);
-        }
-    })
-})
-const commentsContainer = document.querySelector('.post-comments-container');
-function renderComments(comments) {
-    commentsContainer.appendChild(comments);
-}
 
 // sort all posts by dataset
 const postsContainer = document.querySelector('.post-list');
