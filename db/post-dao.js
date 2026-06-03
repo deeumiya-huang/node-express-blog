@@ -143,11 +143,22 @@ async function createComment(postId, userId, content, parentId) {
     );
 }
 
+async function deletePost(postId, userId) {
+    const db = await database;
+    const result = await db.query(
+        `DELETE FROM web_posts WHERE id = ? AND author_id = ?;`,
+        [postId, userId]
+    );
+    return result;
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
     // retrieveSortedPost,
     retrieveComments,
     createComment,
-    retrievePersonalPost
+    retrievePersonalPost,
+    getPostAuthorId,
+    deletePost,
 };

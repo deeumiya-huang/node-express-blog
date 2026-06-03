@@ -59,4 +59,21 @@ router.post("/createComment", async (req, res) => {
     }
 })
 
+router.post("/deletePost/:postId", auth.verifyAuthenticated , async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.session.user.id;
+    try {
+        const result = await postDao.deletePost(postId, userId);
+        if (result.affectedRows !== 0) {
+            res.redirect(`/`);
+        } else {
+            throw new Error(`Post not found or user ${userId} is not authorized to delete post ${postId}`);
+        }
+
+    } catch (error) {
+        console.error("delete post fails", error);
+        res.redirect(`/`);
+    }
+})
+
 module.exports = router;
