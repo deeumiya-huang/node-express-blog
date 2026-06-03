@@ -3,6 +3,15 @@ const openPostBtn2 = document.querySelector('#new-post2');
 const closePostBtn = document.querySelector('#closePostBtn');
 const cancelBtn = document.querySelector('#cancelBtn');
 const postModal = document.querySelector('#postModal');
+const postForm = document.querySelector('#postForm');
+const contentInput = document.querySelector('#content');
+const fileInput = document.querySelector('#postImage');
+const imagePreview = document.querySelector('#imagePreview');
+
+const modalTitle = postModal.querySelector('.modal-title');
+const categorySelect = document.querySelector('#category');
+const titleInput = document.querySelector('#title');
+const editPostId = postModal.querySelector('#editPostId');
 
 const quill = new Quill('#quill-editor', {
     theme: 'snow',
@@ -14,8 +23,30 @@ const quill = new Quill('#quill-editor', {
         ]
     }
 });
+// null for creat, postData for edit
+const openModal = function (postData = null){
+    if (postData) {
+        modalTitle.textContent = 'Edit Post';
+        postForm.action = `/editPost/${postData.id}`;
+        editPostId.value = postData.id;
 
-const openModal = function (){postModal.style.display = 'flex';}
+        categorySelect.value = postData.category;
+        titleInput.value = postData.title;
+        quill.clipboard.dangerouslyPasteHTML(postData.content);
+        if(postData.image){
+            const img = document.createElement('img');
+            img.src = `/public/assets/post-thumbnail/${postData.image}`;
+            imagePreview.appendChild(img);
+        }
+
+    } else {
+        modalTitle.textContent = 'Create Post';
+        postForm.action = '/createPost';
+        editPostId.value = '';
+    }
+    postModal.style.display = 'flex';
+}
+
 const closeModal = function (){
     postModal.style.display = 'none';
     resetPostForm();
@@ -25,18 +56,17 @@ function resetPostForm() {
     postForm.reset();
     imagePreview.innerHTML = '';
     quill.setText('');
+    modalTitle.textContent = 'Create Post';
+    postForm.action = '/createPost';
+    editPostId.value = '';
 }
 
-openPostBtn2?.addEventListener('click', openModal);
-openPostBtn?.addEventListener('click', openModal);
+openPostBtn2?.addEventListener('click', () => openModal());
+openPostBtn?.addEventListener('click', () => openModal());
 closePostBtn.addEventListener('click', closeModal);
 cancelBtn.addEventListener('click', closeModal);
 
 // preview image before upload
-const fileInput = document.querySelector('#postImage');
-const imagePreview = document.querySelector('#imagePreview');
-
-
 fileInput.addEventListener('change', function () {
     imagePreview.innerHTML = ''; // clear old img
     const file = this.files[0];
@@ -52,9 +82,6 @@ fileInput.addEventListener('change', function () {
 });
 
 // wrap quill html into hidden input before submit form
-const postForm = document.getElementById('postForm');
-const contentInput = document.getElementById('content');
-
 postForm.addEventListener('submit', function (e) {
     const quillHtml = quill.getSemanticHTML();
 
@@ -64,4 +91,19 @@ postForm.addEventListener('submit', function (e) {
         return;
     }
     contentInput.value = quillHtml;
+})
+
+const editBtns = document.querySelectorAll('.post-btn-edit');
+editBtns.forEach(editBtn => {
+    editBtn.addEventListener('click', e => {
+        const postCard = editBtn.closest('.post-card');
+        const postData = {
+            id: editBtn.getAttribute('data-post-id'),
+            category: postCard.getAttribute('data-category'),
+            title: postCard.getAttribute('data-title'),
+            content: postCard.getAttribute('data-content'),
+            image: postCard.getAttribute('data-image'),
+        };
+        openModal(postData);
+    })
 })

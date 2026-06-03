@@ -52,13 +52,16 @@
 <div id="postModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
-            <h3>Create Post</h3>
+            <h3 class="modal-title">Create Post</h3>
             <button id="closePostBtn" class="close-btn">&times;</button>
         </div>
 
         <form id="postForm" action="/createPost" method="POST" enctype="multipart/form-data">
 
             <div class="form-row">
+                <div class="form-group" style="display: none">
+                    <input type="hidden" id="editPostId" name="postId" value="">
+                </div>
                 <div class="form-group flex-1">
                     <label for="category">Select Category</label>
                     <select id="category" name="category" required>
@@ -114,10 +117,13 @@
 
         {{#each posts}}
             <article class="post-card" id="post-{{this.id}}"
+                     data-post-id="{{this.id}}"
                      data-latest="{{this.post_at}}"
                      data-category="{{this.category}}"
                      data-username="{{this.username}}"
-                     data-title="{{this.title}}">
+                     data-title="{{this.title}}"
+                     data-content="{{this.content}}"
+                     data-image="{{this.img_name}}">
                 <div class="post-user">
                     <div class="avatar">
                         <img src="/public/assets/avatar/{{this.avatar}}" alt="Avatar">
@@ -129,7 +135,7 @@
 
                     <div class="post-owner-actions">
                         {{#if this.isAuthor}}
-                            <button class="post-action-icon btn-edit" data-post-id="{{this.id}}" title="Edit Post">
+                            <button class="post-action-icon post-btn-edit" data-post-id="{{this.id}}" title="Edit Post">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                             </button>
                             <form action="/deletePost/{{this.id}}" method="POST" onsubmit="return confirm('Are you sure to delete this post？');" style="display: inline;">

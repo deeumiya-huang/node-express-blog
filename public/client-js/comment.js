@@ -1,3 +1,4 @@
+// show up comments when clicking comment icon
 const commentLinks = document.querySelectorAll('.comment-link');
 commentLinks.forEach(commentLink => {
     commentLink.addEventListener('click', function (event) {
@@ -9,6 +10,7 @@ commentLinks.forEach(commentLink => {
     })
 })
 
+// show up reply block when clicking btns.
 const replyBtns = document.querySelectorAll('.toggle-reply');
 replyBtns.forEach(replyBtn => {
     replyBtn.addEventListener('click', function (event) {
@@ -19,3 +21,5 @@ replyBtns.forEach(replyBtn => {
         }
     })
 })
+
+// show up edit post form when click btn

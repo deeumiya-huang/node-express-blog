@@ -198,7 +198,7 @@ a {
 }
 
 
-.post-action-icon.btn-edit:hover {
+.post-action-icon.post-btn-edit:hover {
     background-color: var(--third-color);
     color: var(--secondary-color);
 }
