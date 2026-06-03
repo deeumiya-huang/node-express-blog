@@ -21,7 +21,9 @@
                 {{/if}}
 
                 {{#if data.permissions.delete}}
-                    <a href="/article/{{postId}}/comment/delete?id={{data.id}}" class="btn-delete">Delete</a>
+                    <form action="/deleteComment/{{postId}}/{{data.id}}" method="post" onsubmit="return confirm('Are you sure to delete this comment？');" style="display: inline;">
+                        <button class="btn-delete">Delete</button>
+                    </form>
                 {{else}}
                     <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>
                 {{/if}}

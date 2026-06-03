@@ -73,5 +73,22 @@ router.post("/editPost/:postId", upload.none(),async (req, res) => {
     }
 })
 
+router.post("/deleteComment/:postId/:commentId", async (req, res) => {
+    const { postId, commentId } = req.params;
+    const userId = req.session.user.id;
+    try {
+        const result = await postDao.deleteComment(postId, commentId, userId);
+        if (result.affectedRows !== 0) {
+            console.log("Comment successfully delete");
+            res.redirect(`/#post-${postId}`);
+        } else {
+            console.log("Delete failed: Unauthorized or ID not found");
+            res.status(403).send('Unauthorized or Comment not found');
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Comment delete failed');
+    }
+})
 
 module.exports = router;

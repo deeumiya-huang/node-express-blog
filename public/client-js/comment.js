@@ -22,4 +22,3 @@ replyBtns.forEach(replyBtn => {
     })
 })
 
-// show up edit post form when click btn

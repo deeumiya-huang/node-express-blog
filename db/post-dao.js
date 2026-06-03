@@ -162,6 +162,18 @@ async function editPost(postId, category, title, content, userId) {
     );
     return result;
 }
+async function deleteComment(postId, commentId, userId) {
+    const db = await database;
+    const result = await db.query(
+        `DELETE c FROM web_comments c
+            INNER JOIN web_posts p ON c.post_id = p.id
+            WHERE c.id = ? 
+            AND c.post_id = ? 
+            AND (c.commenter_id = ? OR p.author_id = ?);`,
+        [commentId, postId, userId, userId]
+    );
+    return result;
+}
 
 module.exports = {
     createPost,
@@ -172,5 +184,6 @@ module.exports = {
     retrievePersonalPost,
     getPostAuthorId,
     deletePost,
-    editPost
+    editPost,
+    deleteComment
 };
