@@ -164,9 +164,49 @@ a {
 .post-user {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    position: relative;
     gap: 12px;
     padding: 12px 20px;
     border-bottom: 1px solid var(--border-color);
+}
+
+/* make user left */
+.post-user .avatar,
+.post-user .user-meta {
+    flex-shrink: 0;
+}
+
+.post-owner-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto; /* push user to left */
+}
+
+.post-action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+.post-action-icon.btn-edit:hover {
+    background-color: var(--third-color);
+    color: var(--secondary-color);
+}
+
+
+.post-action-icon.btn-delete:hover {
+    background-color: #ffe3e3;
+    color: #dc3545;
 }
 
 .user-meta {

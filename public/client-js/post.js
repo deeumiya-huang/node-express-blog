@@ -27,8 +27,8 @@ function resetPostForm() {
     quill.setText('');
 }
 
-openPostBtn2.addEventListener('click', openModal);
-openPostBtn.addEventListener('click', openModal);
+openPostBtn2?.addEventListener('click', openModal);
+openPostBtn?.addEventListener('click', openModal);
 closePostBtn.addEventListener('click', closeModal);
 cancelBtn.addEventListener('click', closeModal);
 

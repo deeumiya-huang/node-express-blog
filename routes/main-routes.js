@@ -38,6 +38,7 @@ router.get("/personalPage",auth.verifyAuthenticated, async (req, res) => {
 
 async function getPostsComments(posts, userId) {
     const promises = posts.map(async (post) => {
+        post.isAuthor = String(post.author_id) === String(userId);
         post.comments = await postDao.retrieveComments(post.id, userId);
         return post;
     })
