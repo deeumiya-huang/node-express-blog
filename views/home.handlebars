@@ -7,12 +7,12 @@
 
         <!-- Center: Navigation Links -->
         <div class="nav-menu-center">
-            <a href="#" class="nav-item active" title="Home">
+            <a href="/" class="nav-item active" title="Home">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 <span>Home</span>
             </a>
             {{#if user}}
-                <a href="#" class="nav-item" title="Personal">
+                <a href="/personalPage" class="nav-item" title="Personal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <span>Personal</span>
                 </a>
@@ -212,11 +212,11 @@
 
 <!-- Mobile Bottom Navigation Bar (Hidden by Default) -->
 <nav class="navbar-bottom">
-    <a href="#" class="mobile-nav-item">
+    <a href="/" class="mobile-nav-item">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </a>
     {{#if user}}
-        <a href="#" class="mobile-nav-item">
+        <a href="/personalPage" class="mobile-nav-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
         <a href="#" class="mobile-nav-item btn-add-mobile" id="new-post2">

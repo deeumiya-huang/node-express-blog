@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const postDao = require("../db/post-dao.js");
+const auth = require("../middleware/auth.js");
 
 router.get("/", async (req, res) => {
     res.locals.user = req.session.user;
@@ -9,6 +10,15 @@ router.get("/", async (req, res) => {
         userId = req.session.user.id;
     }
     let posts = await postDao.retrieveAllPost();
+    posts = await getPostsComments(posts, userId);
+    res.locals.posts = posts;
+    res.render("home");
+})
+
+router.get("/personalPage",auth.verifyAuthenticated, async (req, res) => {
+    res.locals.user = req.session.user;
+    const userId = req.session.user.id;
+    let posts = await postDao.retrievePersonalPost(userId);
     posts = await getPostsComments(posts, userId);
     res.locals.posts = posts;
     res.render("home");

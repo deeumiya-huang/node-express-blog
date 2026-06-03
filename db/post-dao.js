@@ -20,6 +20,19 @@ async function retrieveAllPost() {
     return posts;
 }
 
+async function retrievePersonalPost(userId) {
+    const db = await database;
+    const posts = await db.query(
+        `SELECT p.*, u.username, pr.avatar
+         FROM web_posts p
+         INNER JOIN web_users u ON u.id = p.author_id
+         INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+         WHERE p.author_id = ?
+         ORDER BY p.post_at DESC;`,
+        [userId]
+    );
+    return posts;
+}
 
 // async function retrieveSortedPost(sortBy) {
 //     const db = await database;
@@ -135,5 +148,6 @@ module.exports = {
     retrieveAllPost,
     // retrieveSortedPost,
     retrieveComments,
-    createComment
+    createComment,
+    retrievePersonalPost
 };
