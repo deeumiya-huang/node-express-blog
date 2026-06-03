@@ -39,29 +39,34 @@ async function retrieveComments(postId, userId) {
         `SELECT * FROM web_comments WHERE post_id = ?`,
         [postId]
     )
-    const resultTree = buildCommentTree(comments, userId);
+    const resultTree = await buildCommentTree(comments, userId);
     console.log(JSON.stringify(resultTree, null, 2));
     return resultTree;
 
 }
 
-function buildCommentTree(flatList, userId) {
+async function buildCommentTree(flatList, userId) {
     const map = {};
     const tree = [];
 
-    flatList.forEach(item => {
+    const promises = flatList.map(async (item) => {
+        const author = await getAuthorInfo(item.commenter_id);
+
         map[item.id] = {
             id: item.id,
+            author: author,
             content: item.content,
             post_at: item.post_at,
             permissions: {
-                edit: item.commenter_id === userId,   // can only modify and delete personal comment
+                edit: item.commenter_id === userId,
                 delete: item.commenter_id === userId,
-                reply: true // default true
+                reply: true
             },
-            comments: [] // sub-comments
+            comments: []
         };
     });
+
+    await Promise.all(promises);
 
     flatList.forEach(item => {
         const currentItem = map[item.id];
@@ -93,6 +98,16 @@ function validateReplyPermission(nodes, currentLevel) {
             validateReplyPermission(node.comments, currentLevel + 1);
         }
     });
+}
+
+async function getAuthorInfo(authorId) {
+    const db = await database;
+
+    const profile = await db.query(
+        `select u.username, p.avatar from web_users u INNER JOIN web_user_profiles p ON u.id = p.user_id where u.id = ?`,
+        [authorId]);
+
+    return profile[0];
 }
 
 module.exports = {

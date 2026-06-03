@@ -3,7 +3,7 @@
     --card-bg: #ffffff;
     --text-main: #333333;
     --text-muted: #777777;
-    --primary-color: #5a927a;
+    --primary-color: #62c198;
     --secondary-color: #3b7059;
     --third-color: #c7e8d7;
     --border-color: #e9ecef;
@@ -285,9 +285,195 @@ a {
     background-color: #f1f3f5;
 }
 
+/* ==========================================
+   comment block
+   ========================================== */
+.post-comments-container {
+    /*max-width: 700px;*/
+    margin: 20px auto;
+    display: none;
+    /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;*/
+}
+.post-comments-container.active {
+    display: block;
+}
+
+/* avatar */
+.user-avatar-sm {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-avatar-xs {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ==========================================
+   Comment form
+   ========================================== */
+.main-comment-form, .reply-comment-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.main-comment-form input, .reply-comment-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.main-comment-form input:focus, .reply-comment-form input:focus {
+    border-color: var(--primary-color);
+}
+
+.main-comment-form button, .reply-comment-form button[type="submit"] {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.main-comment-form button:hover, .reply-comment-form button[type="submit"]:hover {
+    background: var(--secondary-color);
+}
+
+/* ==========================================
+   Comment Node
+   ========================================== */
+.comment-node {
+    margin-top: 12px;
+}
+
+.comment-main {
+    background: #fff;
+    border: 1px solid #ebebeb;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.comment-username {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.comment-text {
+    margin: 4px 0 12px 0;
+    color: #444;
+    font-size: 15px;
+    line-height: 1.5;
+    padding-left: 2px;
+}
+
+/* ==========================================
+   comment actions
+   ========================================== */
+.comment-actions {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.comment-actions a, .comment-actions button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #65676b;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.comment-actions a:hover, .comment-actions button:hover {
+    text-decoration: underline;
+    color: #6dc59f;
+}
+
+.comment-actions .btn-delete:hover {
+    color: #dc3545;
+}
+
+.comment-actions .disabled-link del {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.reply-form-container {
+    display: none;
+    margin-top: 12px;
+    border-left: 3px solid var(--primary-color);
+    padding-left: 10px;
+}
+.reply-form-container.active {
+    display: block;
+}
+
+.reply-comment-form {
+    margin-bottom: 0;
+    background: #fff;
+    border: 1px solid #eee;
+}
+
+.reply-form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-cancel-reply {
+    background: #e4e6eb;
+    color: #050505;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.btn-cancel-reply:hover {
+    background: #d8dadf;
+}
+
+/* ==========================================
+   Nested Comments
+   ========================================== */
+.nested-comments {
+    margin-left: 32px; /* indent */
+    border-left: 2px solid #e9ecef; /* tree line */
+    padding-left: 16px;
+}
 
 /* ==================================================================
-   4. Mobile Bottom Navbar (Hidden by default)
+    Mobile Bottom Navbar (Hidden by default)
    ================================================================== */
 .navbar-bottom {
     display: none;

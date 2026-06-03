@@ -5,7 +5,8 @@ const postDao = require("../db/post-dao.js");
 router.get("/", async (req, res) => {
     res.locals.user = req.session.user;
 
-    const posts = await postDao.retrieveAllPost();
+    let posts = await postDao.retrieveAllPost();
+    posts = await getPostsComments(posts);
     res.locals.posts = posts;
     res.render("home");
 })
@@ -22,9 +23,12 @@ router.get("/", async (req, res) => {
 //     res.json(posts);
 // })
 
-router.get("/getComments", async (req, res) => {
-    const postId = req.query.postId;
-    const comments = await postDao.retrieveComments(postId);
-    res.json(comments);
-})
+async function getPostsComments(posts) {
+    const promises = posts.map(async (post) => {
+        post.comments = await postDao.retrieveComments(post.id);
+        return post;
+    })
+    return await Promise.all(promises);
+}
+
 module.exports = router;

@@ -121,6 +121,7 @@ function renderComments(comments) {
     commentsContainer.appendChild(comments);
 }
 
+// sort all posts by dataset
 const postsContainer = document.querySelector('.post-list');
 const sortSelect = document.querySelector('#sort-select');
 sortSelect.addEventListener('change', async function () {
@@ -140,3 +141,5 @@ sortSelect.addEventListener('change', async function () {
     });
     posts.forEach((post) => {postsContainer.appendChild(post)});
 })
+
+

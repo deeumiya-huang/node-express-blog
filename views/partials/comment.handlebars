@@ -1,0 +1,53 @@
+<div class="comment-node" data-comment-id="{{data.id}}">
+    <div class="comment-main">
+        <div class="comment-header">
+            <img src="/public/assets/avatar/{{data.author.avatar}}" alt="{{data.author.username}}'s avatar" class="user-avatar-sm">
+            <span class="comment-username">{{data.author.username}}</span>
+            <span class="comment-date">{{data.post_at}}</span>
+        </div>
+        <p class="comment-text">{{data.content}}</p>
+        {{#if @root.user}}
+            <div class="comment-actions">
+                {{#if data.permissions.reply}}
+                    <button type="button" class="btn-reply toggle-reply">Reply</button>
+                {{else}}
+                    <a aria-disabled="true" href="#" class="disabled-link"><del>Reply</del></a>
+                {{/if}}
+
+                {{#if data.permissions.edit}}
+                    <a href="/article/{{postId}}/comment/edit?id={{data.id}}" class="btn-edit">Edit</a>
+                {{else}}
+                    <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>
+                {{/if}}
+
+                {{#if data.permissions.delete}}
+                    <a href="/article/{{postId}}/comment/delete?id={{data.id}}" class="btn-delete">Delete</a>
+                {{else}}
+                    <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>
+                {{/if}}
+            </div>
+
+            {{#if data.permissions.reply}}
+                <div class="reply-form-container"> <!-- todo -->
+                    <form action="/article/{{postId}}/comment/create?parent={{data.id}}" method="POST" class="reply-comment-form">
+                    <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="Your Avatar" class="user-avatar-xs">
+                    <input type="text" name="content" placeholder="reply for {{data.author.username}}..." required>
+                    <div class="reply-form-actions">
+                        <button type="button" class="btn-cancel-reply">cancel</button>
+                        <button type="submit">reply</button>
+                    </div>
+                    </form>
+                </div>
+            {{/if}}
+        {{/if}}
+    </div>
+
+    <!-- for nested comments -->
+    {{#if data.comments}}
+        <div class="nested-comments">
+            {{#each data.comments}}
+                {{>comment data=this postId=../postId}}
+            {{/each}}
+        </div>
+    {{/if}}
+</div>
