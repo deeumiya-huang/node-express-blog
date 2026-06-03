@@ -57,4 +57,21 @@ router.post('/createPost', upload.single('postImage'), async (req, res) => {
     }
 });
 
+// todo: haven't edit image yet
+router.post("/editPost/:postId", upload.none(),async (req, res) => {
+    const { postId ,category, title, content} = req.body;
+    const userId = req.session.user.id;
+    try {
+        const result = await postDao.editPost(postId, category, title, content, userId);
+        if (result.affectedRows !== 0) {
+            console.log("Post successfully edit");
+            res.redirect(`/#post-${postId}`);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Post edit failed');
+    }
+})
+
+
 module.exports = router;

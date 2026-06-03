@@ -152,6 +152,17 @@ async function deletePost(postId, userId) {
     return result;
 }
 
+async function editPost(postId, category, title, content, userId) {
+    const db = await database;
+    const result = await db.query(
+        `UPDATE web_posts 
+             SET title = ?, content = ?, category = ? 
+             WHERE id = ? AND author_id = ?;`,
+        [title, content, category, postId, userId]
+    );
+    return result;
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
@@ -161,4 +172,5 @@ module.exports = {
     retrievePersonalPost,
     getPostAuthorId,
     deletePost,
+    editPost
 };
