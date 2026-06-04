@@ -8,14 +8,17 @@ async function createPost(post) {
     return result;
 }
 
-async function retrieveAllPost() {
+async function retrieveAllPost(userId) {
     const db = await database;
     const posts = await db.query(
-        `SELECT p.*, u.username, pr.avatar
+        `SELECT p.*, u.username, pr.avatar,
+                IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
          FROM web_posts p
          INNER JOIN web_users u ON u.id = p.author_id
          INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+         LEFT JOIN web_post_likes l ON p.id = l.post_id AND l.user_id = ?
          ORDER BY p.post_at DESC;`,
+        [userId]
     );
     return posts;
 }
@@ -23,13 +26,15 @@ async function retrieveAllPost() {
 async function retrievePersonalPost(userId) {
     const db = await database;
     const posts = await db.query(
-        `SELECT p.*, u.username, pr.avatar
+        `SELECT p.*, u.username, pr.avatar, 
+                    IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
          FROM web_posts p
          INNER JOIN web_users u ON u.id = p.author_id
          INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+         LEFT JOIN web_post_likes l ON p.id = l.post_id AND l.user_id = ?
          WHERE p.author_id = ?
          ORDER BY p.post_at DESC;`,
-        [userId]
+        [userId, userId]
     );
     return posts;
 }
@@ -175,6 +180,36 @@ async function editComment(postId, commentId, content, userId) {
     return result;
 }
 
+async function toggleLike(postId, userId, isLikeAction) {
+    const db = await database;
+    if (isLikeAction) {
+        // use IGNORE to prevent resend like
+        await db.query(`INSERT IGNORE INTO web_post_likes (post_id, user_id) VALUES (?, ?);`, [postId, userId]);
+    }  else {
+        await db.query(`DELETE FROM web_post_likes WHERE post_id = ? AND user_id = ?;`, [postId, userId]);
+    }
+    // get the real like amount from DB
+    await db.query(
+        `UPDATE web_posts p
+             JOIN (SELECT COUNT(*) AS total FROM web_post_likes WHERE post_id = ?) c
+             SET p.likes = c.total
+             WHERE p.id = ?;`,
+        [postId, postId]
+    );
+
+    const [row] = await db.query(`SELECT likes FROM web_posts WHERE id = ?`, [postId]);
+    return row ? row.likes : 0;
+}
+
+async function hasUserLikedPost(postId, userId) {
+    const db = await database;
+    const [row] = await db.query(
+        `SELECT 1 FROM web_post_likes WHERE post_id = ? AND user_id = ?;`,
+        [postId, userId]
+    );
+    return !!row; // return true if data was found, otherwise return false.
+}
+
 module.exports = {
     createPost,
     retrieveAllPost,
@@ -184,5 +219,7 @@ module.exports = {
     deletePost,
     editPost,
     deleteComment,
-    editComment
+    editComment,
+    toggleLike,
+    hasUserLikedPost,
 };

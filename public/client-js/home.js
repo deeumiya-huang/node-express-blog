@@ -1,5 +1,4 @@
 
-
 const avatarBtn = document.querySelector('#avatar-btn');
 const userMenu = document.querySelector('#nav-user-menu');
 const bottomAvatarBtn = document.querySelector('#mobile-avatar-btn');
@@ -55,4 +54,47 @@ sortSelect.addEventListener('change', async function () {
     posts.forEach((post) => {postsContainer.appendChild(post)});
 })
 
+document.body.addEventListener('click', async (event) => {
+    const likeBtn = event.target.closest('.action-btn[title="Like"]');
+    if (!likeBtn) return;
 
+    event.preventDefault();
+
+    const countSpan = likeBtn.querySelector('span');
+    let currentLikes = parseInt(countSpan.textContent) || 0;
+    const isLiked = likeBtn.classList.contains('liked');
+    if (isLiked) {
+        likeBtn.classList.remove('liked');
+        countSpan.textContent = currentLikes - 1;
+    } else {
+        likeBtn.classList.add('liked');
+        countSpan.textContent = currentLikes + 1;
+    }
+
+    const postItem = likeBtn.closest('.post-card');
+    const postId = postItem.dataset.postId;
+
+    try {
+        const response = await fetch(`/likePost/${postId}`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ isLikeAction: !isLiked })
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // Calibrate the like count here if the backend returns the latest, accurate data
+        const data = await response.json();
+        if (data && data.latestLikes !== undefined) {
+            countSpan.textContent = data.latestLikes;
+        }
+    } catch (error) {
+        console.error('Like failed:', error);
+        // Revert frontend state if the backend request fails
+        likeBtn.classList.toggle('liked');
+        countSpan.innerText = isLiked ? currentLikes : currentLikes - 1;
+        alert('can\'t link to server, please try it later.');
+    }
+})

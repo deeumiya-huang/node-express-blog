@@ -160,4 +160,17 @@ router.post("/deleteAccount", async (req, res) => {
     }
 })
 
+router.post("/likePost/:postId", async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const postId = req.params.postId;
+        const { isLikeAction } = req.body;
+        const latestLikes = await postDao.toggleLike(postId, userId, isLikeAction);
+        res.json({success: true, latestLikes: latestLikes});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+})
+
 module.exports = router;

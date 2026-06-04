@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
     if (req.session.user) {
         userId = req.session.user.id;
     }
-    let posts = await postDao.retrieveAllPost();
+    let posts = await postDao.retrieveAllPost(userId);
     posts = await getPostsComments(posts, userId);
     res.locals.posts = posts;
     res.render("home");

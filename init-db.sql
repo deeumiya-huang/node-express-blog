@@ -1,4 +1,5 @@
 -- Your database initialisation SQL here
+DROP TABLE IF EXISTS web_post_likes;
 DROP TABLE IF EXISTS web_comments;
 DROP TABLE IF EXISTS web_posts;
 DROP TABLE IF EXISTS web_user_profiles;
@@ -48,6 +49,15 @@ CREATE TABLE IF NOT EXISTS web_comments (
     FOREIGN KEY (post_id) REFERENCES web_posts(id) ON DELETE CASCADE ,
     FOREIGN KEY (commenter_id) REFERENCES web_users(id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES web_comments(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS web_post_likes (
+    post_id INT NOT NULL ,
+    user_id INT NOT NULL ,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (post_id, user_id),
+    FOREIGN KEY (post_id) REFERENCES web_posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES web_users(id) ON DELETE CASCADE
 );
 
 INSERT INTO web_comments (id, post_id, commenter_id, content, parent_id) VALUES

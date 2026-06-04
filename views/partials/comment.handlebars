@@ -24,21 +24,22 @@
             <div class="comment-actions active">
                 {{#if data.permissions.reply}}
                     <button type="button" class="btn-reply toggle-reply">Reply</button>
-                {{else}}
-                    <a aria-disabled="true" href="#" class="disabled-link"><del>Reply</del></a>
+<!--                {{else}}-->
+<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Reply</del></a>-->
                 {{/if}}
 
                 {{#if data.permissions.edit}}
-                    <button type="button" class="btn-edit toggle-edit">Edit</button>                {{else}}
-                    <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>
+                    <button type="button" class="btn-edit toggle-edit">Edit</button>
+<!--                {{else}}-->
+<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>-->
                 {{/if}}
 
                 {{#if data.permissions.delete}}
                     <form action="/deleteComment/{{postId}}/{{data.id}}" method="post" onsubmit="return confirm('Are you sure to delete this comment？');" style="display: inline;">
                         <button class="btn-delete">Delete</button>
                     </form>
-                {{else}}
-                    <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>
+<!--                {{else}}-->
+<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>-->
                 {{/if}}
             </div>
 

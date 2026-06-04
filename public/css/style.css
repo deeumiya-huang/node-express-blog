@@ -282,6 +282,19 @@ a {
     background-color: #f1f3f5;
     color: var(--primary-color);
 }
+/* like button filled */
+.action-btn.liked {
+    color: var(--primary-color);
+}
+
+.action-btn.liked svg {
+    fill: var(--primary-color);
+}
+
+.action-btn.liked:hover {
+    background-color: rgba(109, 197, 159, 0.1);
+}
+
 
 .nav-user {
     position: relative;
