@@ -10,7 +10,9 @@ const upload = multer({
 });
 const sanitizeHtml = require('sanitize-html');
 const postDao = require("../db/post-dao.js");
+const userDao = require("../db/users-dao.js");
 const auth = require("../middleware/auth.js");
+const bcrypt = require("bcryptjs");
 
 //check user before every request in this router file
 router.use(auth.verifyAuthenticated);
@@ -118,7 +120,27 @@ router.get("/editProfile", async (req, res) => {
 })
 
 router.post("/editProfile", async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const {username, password, forename, surname, bio, selected_avatar} = req.body;
 
+        if (password === ""){
+            await userDao.updateUsername(userId, username);
+        } else {
+            const saltRounds = 5;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            await userDao.updateCredential(userId, username, hashedPassword);
+        }
+        // session has to change after edit!
+        req.session.user = await userDao.retrieveUserByUsername(username);
+
+        await userDao.updateProfile(userId, forename, surname, bio, selected_avatar);
+        req.session.user.profile = await userDao.retrieveProfileById(userId);
+        res.redirect("/?success=profile_updated");
+    } catch (e) {
+        console.error(e);
+        res.redirect("/?error=edit_profile_failed");
+    }
 })
 
 module.exports = router;

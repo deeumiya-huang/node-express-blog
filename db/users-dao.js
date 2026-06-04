@@ -46,10 +46,38 @@ async function retrieveProfileById(userId) {
 
     return profile[0];
 }
+
+async function updateCredential(userId, username, hashedPassword) {
+    const db = await database;
+    return await db.query(
+        `UPDATE web_users SET username = ?, password_hash = ? WHERE id = ?;`,
+        [username, hashedPassword, userId]
+    );
+}
+
+async function updateUsername(userId, username) {
+    const db = await database;
+    return await db.query(
+        `UPDATE web_users SET username = ? WHERE id = ?;`,
+        [username, userId]
+    );
+}
+
+async function updateProfile(userId, forename, surname, bio, avatar) {
+    const db = await database;
+    return await db.query(
+        `UPDATE web_user_profiles SET forename = ?, surname = ?, bio = ?, avatar = ? WHERE user_id = ?;`,
+        [forename, surname, bio, avatar, userId]
+    );
+}
+
 module.exports = {
     findUserByUsername,
     createUser,
     retrieveUserByUsername,
     createUserProfile,
-    retrieveProfileById
+    retrieveProfileById,
+    updateUsername,
+    updateCredential,
+    updateProfile,
 };
