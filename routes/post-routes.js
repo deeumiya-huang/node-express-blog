@@ -51,7 +51,7 @@ router.post('/createPost', upload.single('postImage'), async (req, res) => {
         const result = await postDao.createPost(post);
         if (result.affectedRows !== 0) {
             console.log("Post successfully created");
-            res.redirect("/"); //todo: redirect to personal page, so the post will show up at the top.
+            res.redirect("/");
         } else {
             throw new Error("Post created failed");
         }
@@ -76,39 +76,20 @@ router.post("/editPost/:postId", upload.none(),async (req, res) => {
     }
 })
 
-router.post("/deleteComment/:postId/:commentId", async (req, res) => {
-    const { postId, commentId } = req.params;
+router.post("/deletePost/:postId", async (req, res) => {
+    const postId = req.params.postId;
     const userId = req.session.user.id;
     try {
-        const result = await postDao.deleteComment(postId, commentId, userId);
+        const result = await postDao.deletePost(postId, userId);
         if (result.affectedRows !== 0) {
-            console.log("Comment successfully delete");
-            res.redirect(`/#post-${postId}`);
+            res.redirect(`/`);
         } else {
-            console.log("Delete failed: Unauthorized or ID not found");
-            res.redirect(`/#post-${postId}?error=delete_failed`);
+            throw new Error(`Post not found or user ${userId} is not authorized to delete post ${postId}`);
         }
-    } catch (error) {
-        console.log("Delete failed",error);
-        res.redirect(`/#post-${postId}?error=delete_failed`);
-    }
-})
 
-router.post("/editComment/:postId/:commentId", async (req, res) => {
-    const { postId, commentId } = req.params;
-    const content = req.body.content;
-    const userId = req.session.user.id;
-    try {
-        const result = await postDao.editComment(postId, commentId, content, userId);
-        if (result.affectedRows !== 0) {
-            console.log("Comment successfully edit");
-            res.redirect(`/#post-${postId}`);
-        } else {
-            console.log("Edit Comment failed: Unauthorized or ID not found");
-            res.redirect(`/#post-${postId}?error=edit_failed`);        }
     } catch (error) {
-        console.log("Edit Comment failed",error);
-        res.redirect(`/#post-${postId}?error=edit_comment_failed`);
+        console.error("delete post fails", error);
+        res.redirect(`/`);
     }
 })
 

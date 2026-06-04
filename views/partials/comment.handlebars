@@ -50,7 +50,7 @@
                 </div>
 
                 {{#if data.permissions.reply}}
-                    <div class="reply-form-container"> <!-- todo -->
+                    <div class="reply-form-container">
                         <form action="/createComment" method="POST" class="reply-comment-form">
                         <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="Your Avatar" class="user-avatar-xs">
                         <input type="hidden" name="parent_id" value="{{data.id}}">

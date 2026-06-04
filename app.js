@@ -39,15 +39,18 @@ app.use(session({
 const path = require("path");
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// Setup our routes
-const router = require("./routes/account-routes.js");
-app.use("/account", router);
-
+// Setup routes
 const mainRouter = require("./routes/main-routes.js");
 app.use(mainRouter);
 
+const accountRouter = require("./routes/account-routes.js");
+app.use("/account", accountRouter);
+
 const postRouter = require("./routes/post-routes.js");
 app.use(postRouter);
+
+const commentRouter = require("./routes/comment-routes.js");
+app.use(commentRouter);
 
 app.listen(port, function () {
     console.log(`Web final project listening on http://localhost:${port}/`);
