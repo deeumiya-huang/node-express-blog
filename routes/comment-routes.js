@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const postDao = require("../db/post-dao.js");
-const userDao = require("../db/users-dao.js");
 const auth = require("../middleware/auth.js");
 
 router.use(auth.verifyAuthenticated);
@@ -31,7 +30,7 @@ router.post("/createComment", async (req, res) => {
         // for those comment under post directly, make it null rather than undefined and send to DB.
         const verifiedParentId = parent_id ? parent_id : null;
         const userId = req.session.user.id;
-        const result = await postDao.createComment(post_id, userId, content, verifiedParentId);
+        await postDao.createComment(post_id, userId, content, verifiedParentId);
         res.redirect(`/#post-${post_id}`);
     } catch (e) {
         console.error(e);
@@ -54,7 +53,7 @@ router.post("/editComment/:postId/:commentId", async (req, res) => {
         }
     } catch (e) {
         console.error(e);
-        res.redirect(`/#post-${postId}?message=comment_edited_failed`);
+        res.redirect(`/?message=comment_edited_failed`);
     }
 })
 
