@@ -24,18 +24,6 @@ router.get("/personalPage",auth.verifyAuthenticated, async (req, res) => {
     res.render("home");
 })
 
-// router.get("/sortPosts", async (req, res) => {
-//     const sortMap = {
-//         latest: "post_at",
-//         category: "category",
-//         username: "username",
-//         title: "title"
-//     };
-//     const sqlSort = sortMap[req.query.sort] || "post_at";
-//     const posts = await postDao.retrieveSortedPost(sqlSort);
-//     res.json(posts);
-// })
-
 async function getPostsComments(posts, userId) {
     const promises = posts.map(async (post) => {
         post.isAuthor = String(post.author_id) === String(userId);
