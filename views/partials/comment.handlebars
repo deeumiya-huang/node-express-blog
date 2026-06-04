@@ -24,48 +24,54 @@
             <div class="comment-actions active">
                 {{#if data.permissions.reply}}
                     <button type="button" class="btn-reply toggle-reply">Reply</button>
-<!--                {{else}}-->
-<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Reply</del></a>-->
+                {{!--
+                {{else}}
+                    <a aria-disabled="true" href="#" class="disabled-link"><del>Reply</del></a>
+                    --}}
                 {{/if}}
 
                 {{#if data.permissions.edit}}
                     <button type="button" class="btn-edit toggle-edit">Edit</button>
-<!--                {{else}}-->
-<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>-->
+                {{!--
+                {{else}}
+                    <a aria-disabled="true" href="#" class="disabled-link"><del>Edit</del></a>
+                    --}}
                 {{/if}}
 
                 {{#if data.permissions.delete}}
                     <form action="/deleteComment/{{postId}}/{{data.id}}" method="post" onsubmit="return confirm('Are you sure to delete this comment？');" style="display: inline;">
                         <button class="btn-delete">Delete</button>
                     </form>
-<!--                {{else}}-->
-<!--                    <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>-->
+                    {{!--
+                    {{else}}
+                        <a aria-disabled="true" href="#" class="disabled-link"><del>Delete</del></a>
+                        --}}
                 {{/if}}
-            </div>
-
-            {{#if data.permissions.reply}}
-                <div class="reply-form-container"> <!-- todo -->
-                    <form action="/createComment" method="POST" class="reply-comment-form">
-                    <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="Your Avatar" class="user-avatar-xs">
-                    <input type="hidden" name="parent_id" value="{{data.id}}">
-                    <input type="hidden" name="post_id" value="{{postId}}">
-                    <input type="text" name="content" placeholder="reply for {{data.author.username}}..." required>
-                    <div class="reply-form-actions">
-                        <button type="button" class="btn-cancel-reply">cancel</button>
-                        <button type="submit">reply</button>
-                    </div>
-                    </form>
                 </div>
+
+                {{#if data.permissions.reply}}
+                    <div class="reply-form-container"> <!-- todo -->
+                        <form action="/createComment" method="POST" class="reply-comment-form">
+                        <img src="/public/assets/avatar/{{@root.user.profile.avatar}}" alt="Your Avatar" class="user-avatar-xs">
+                        <input type="hidden" name="parent_id" value="{{data.id}}">
+                        <input type="hidden" name="post_id" value="{{postId}}">
+                        <input type="text" name="content" placeholder="reply for {{data.author.username}}..." required>
+                        <div class="reply-form-actions">
+                            <button type="button" class="btn-cancel-reply">cancel</button>
+                            <button type="submit">reply</button>
+                        </div>
+                        </form>
+                    </div>
+                {{/if}}
             {{/if}}
+        </div>
+
+        <!-- for nested comments -->
+        {{#if data.comments}}
+            <div class="nested-comments">
+                {{#each data.comments}}
+                    {{>comment data=this postId=../postId}}
+                {{/each}}
+            </div>
         {{/if}}
     </div>
-
-    <!-- for nested comments -->
-    {{#if data.comments}}
-        <div class="nested-comments">
-            {{#each data.comments}}
-                {{>comment data=this postId=../postId}}
-            {{/each}}
-        </div>
-    {{/if}}
-</div>
