@@ -143,4 +143,21 @@ router.post("/editProfile", async (req, res) => {
     }
 })
 
+router.post("/deleteAccount", async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const result = await userDao.deleteUser(userId);
+        if (result.affectedRows !== 0) {
+            console.log("account delete successfully!")
+            req.session.destroy();
+            res.redirect("/?message=Account_deleted_successfully!");
+        } else {
+            res.redirect("/?message=Account_deleted_failed!");
+        }
+    } catch (error) {
+        console.log(error);
+        res.redirect("/?message=Account_deleted_failed!");
+    }
+})
+
 module.exports = router;

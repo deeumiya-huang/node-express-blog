@@ -51,7 +51,7 @@ router.post("/login", async function (req, res) {
 
 router.get("/logout", function (req, res) {
     if (req.session.user) {
-        // delete req.session.user; //todo: delete or destroy?
+        // delete req.session.user;
         req.session.destroy(function(err) {
             if(err) {
                 logger.error(err);

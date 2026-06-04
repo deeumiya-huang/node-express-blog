@@ -71,6 +71,14 @@ async function updateProfile(userId, forename, surname, bio, avatar) {
     );
 }
 
+async function deleteUser(userId) {
+    const db = await database;
+    return await db.query(
+        `DELETE FROM web_users WHERE id = ?;`,
+        [userId]
+    );
+}
+
 module.exports = {
     findUserByUsername,
     createUser,
@@ -80,4 +88,5 @@ module.exports = {
     updateUsername,
     updateCredential,
     updateProfile,
+    deleteUser
 };
