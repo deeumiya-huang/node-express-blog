@@ -24,6 +24,29 @@ body {
     padding: 40px 35px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.delete-account-form {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
+.btn-delete-account {
+    background: none;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-delete-account:hover {
+    background: #ff4d4f;
+    color: #fff;
 }
 
 .header-section {
@@ -145,6 +168,31 @@ body {
     opacity: 1;
 }
 
+/* cancel and submit btn */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-cancel {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #e4e6eb;
+    color: #050505;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #d8dadf;
+}
+
 .submit-btn {
     width: 100%;
     padding: 14px;
@@ -154,7 +202,6 @@ body {
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 500;
-    cursor: pointer;
     transition: background-color 0.2s ease;
 }
 

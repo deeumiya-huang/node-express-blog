@@ -110,4 +110,15 @@ router.post("/editComment/:postId/:commentId", async (req, res) => {
     }
 })
 
+router.get("/editProfile", async (req, res) => {
+    res.locals.user = req.session.user;
+    res.locals.isEdit = true;
+    res.locals.layout = null;
+    res.render("account/create-profile");
+})
+
+router.post("/editProfile", async (req, res) => {
+
+})
+
 module.exports = router;

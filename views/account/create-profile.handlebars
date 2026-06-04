@@ -11,38 +11,56 @@
 </head>
 <body>
 <div class="profile-card">
+    {{#if isEdit}}
+        <form action="/deleteAccount" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" class="delete-account-form">
+            <button type="submit" class="btn-delete-account">Delete Account</button>
+        </form>
+    {{/if}}
+
     {{#if failMessage}}
         <p class="msg-error" id="server-msg">{{failMessage}}</p>
     {{/if}}
     {{#if successMessage}}
         <p class="msg-success" id="server-msg">{{successMessage}}</p>
     {{/if}}
+
     <div class="header-section">
-        <h2>Complete Profile</h2>
-        <p class="subtitle">Just a few more details to get you started</p>
+        <h2>{{#if isEdit}}Edit Profile{{else}}Complete Profile{{/if}}</h2>
+        <p class="subtitle">{{#if isEdit}}Update your account details below{{else}}Just a few more details to get you started{{/if}}</p>
     </div>
 
-    <form id="profileForm" action="/account/createProfile" method="POST">
+    <form id="profileForm" action="{{#if isEdit}}/editProfile{{else}}/account/createProfile{{/if}}" method="POST">
+
+        {{#if isEdit}}
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{user.username}}" placeholder="Enter username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">New Password (leave blank to keep current)</label>
+                <input type="password" id="password" name="password" placeholder="Enter new password">
+            </div>
+        {{/if}}
 
         <div class="name-row">
             <div class="input-group">
                 <label for="forename">Forename</label>
-                <input type="text" id="forename" name="forename" placeholder="Harry" required>
+                <input type="text" id="forename" name="forename" value="{{user.profile.forename}}" placeholder="Harry" required>
             </div>
             <div class="input-group">
                 <label for="surname">Surname</label>
-                <input type="text" id="surname" name="surname" placeholder="Potter" required>
+                <input type="text" id="surname" name="surname" value="{{user.profile.surname}}" placeholder="Potter" required>
             </div>
         </div>
 
         <div class="input-group">
             <label for="bio">Bio</label>
-            <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+            <textarea id="bio" name="bio" placeholder="Tell us about yourself...">{{user.profile.bio}}</textarea>
         </div>
 
         <span class="avatar-label">Choose an Avatar</span>
         <div class="avatar-options">
-            <div class="avatar-circle active" data-avatar="avatar1.png">
+            <div class="avatar-circle" data-avatar="avatar1.png">
                 <img src="/public/assets/avatar/avatar1.png" alt="Avatar 1">
             </div>
             <div class="avatar-circle" data-avatar="avatar2.png">
@@ -56,9 +74,15 @@
             </div>
         </div>
 
-        <input type="hidden" id="selected-avatar" name="selected_avatar" value="avatar1.png">
+        <input type="hidden" id="selected-avatar" name="selected_avatar"
+               value="{{#if user.profile.avatar}}{{user.profile.avatar}}{{else}}avatar1.png{{/if}}">
 
-        <button type="submit" class="submit-btn">Save Profile</button>
+        <div class="form-actions">
+            {{#if isEdit}}
+                <a href="/" class="btn-cancel">Cancel</a>
+            {{/if}}
+            <button type="submit" class="submit-btn">Save Profile</button>
+        </div>
     </form>
 
 </div>

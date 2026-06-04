@@ -1,6 +1,17 @@
 const avatarCircles = document.querySelectorAll('.avatar-circle');
 const hiddenInput = document.querySelector('#selected-avatar');
 
+const currentAvatar = hiddenInput.value;
+if (currentAvatar) {
+    avatarCircles.forEach(circle => {
+        if (circle.dataset.avatar === currentAvatar) {
+            circle.classList.add('active');
+        } else {
+            circle.classList.remove('active');
+        }
+    });
+}
+
 avatarCircles.forEach(circle => {
     circle.addEventListener('click', function() {
 
