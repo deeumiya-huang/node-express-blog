@@ -145,16 +145,28 @@ async function deletePost(postId, userId) {
     return result;
 }
 
-async function editPost(postId, category, title, content, userId) {
+async function editPost(postId, category, title, content, imgName, userId) {
     const db = await database;
-    const result = await db.query(
-        `UPDATE web_posts 
-             SET title = ?, content = ?, category = ? 
+    // if new imgName was passed, update the imgName field, otherwise skip it.
+    if (imgName !== undefined) {
+        const result = await db.query(
+            `UPDATE web_posts 
+             SET category = ?, title = ?, content = ?, img_name = ? 
              WHERE id = ? AND author_id = ?;`,
-        [title, content, category, postId, userId]
-    );
-    return result;
+            [category, title, content, imgName, postId, userId]
+        );
+        return result;
+    } else {
+        const result = await db.query(
+            `UPDATE web_posts 
+             SET category = ?, title = ?, content = ? 
+             WHERE id = ? AND author_id = ?;`,
+            [category, title, content, postId, userId]
+        );
+        return result;
+    }
 }
+
 async function deleteComment(postId, commentId, userId) {
     const db = await database;
     const result = await db.query(

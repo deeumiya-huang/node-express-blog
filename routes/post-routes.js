@@ -59,12 +59,33 @@ router.post('/createPost', upload.single('postImage'), async (req, res) => {
     }
 });
 
-// todo: haven't edit image yet
-router.post("/editPost/:postId", upload.none(),async (req, res) => {
+router.post("/editPost/:postId", upload.single('postImage'),async (req, res) => {
     const { postId ,category, title, content} = req.body;
     const userId = req.session.user.id;
     try {
-        const result = await postDao.editPost(postId, category, title, content, userId);
+        let newImgName = undefined; // set default undefined, which means no need to update img.
+
+        // check if any photo was uploaded.
+        if (req.file) {
+            const fileInfo = req.file;
+            const oldFileName = fileInfo.path;
+            const newFileName = `./public/assets/post-img/${fileInfo.originalname}`;
+            fs.renameSync(oldFileName, newFileName);
+
+            await sharp(newFileName)
+                .resize(680)
+                .toFile(`./public/assets/post-thumbnail/${fileInfo.originalname}`);
+
+            newImgName = fileInfo.originalname; // record new image name.
+        }
+
+        const cleanContent = sanitizeHtml(content, {
+            allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
+            allowedAttributes: {}
+        });
+
+        // if no new image upload, newImgName remain undefined.
+        const result = await postDao.editPost(postId, category, title, cleanContent, newImgName, userId);
         if (result.affectedRows !== 0) {
             console.log("Post successfully edit");
             res.redirect(`/#post-${postId}`);
