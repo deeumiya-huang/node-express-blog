@@ -134,6 +134,7 @@ async function createComment(postId, userId, content, parentId) {
         `insert into web_comments (post_id, commenter_id, content, parent_id) values (?,?,?,?)`,
         [postId, userId, content, parentId]
     );
+    return result;
 }
 
 async function deletePost(postId, userId) {

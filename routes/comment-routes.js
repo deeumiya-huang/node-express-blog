@@ -31,8 +31,15 @@ router.post("/createComment", async (req, res) => {
         // for those comment under post directly, make it null rather than undefined and send to DB.
         const verifiedParentId = parent_id ? parent_id : null;
         const userId = req.session.user.id;
-        await postDao.createComment(post_id, userId, content, verifiedParentId);
-        res.redirect(`/#post-${post_id}`);
+
+        const result = await postDao.createComment(post_id, userId, content, verifiedParentId);
+        const newCommentId = result.insertId || parent_id;
+
+        if (newCommentId) {
+            res.redirect(`/#comment-${newCommentId}`);
+        } else {
+            res.redirect(`/#post-${post_id}`);
+        }
     } catch (e) {
         console.error(e);
         res.redirect("/");
@@ -47,7 +54,7 @@ router.post("/editComment/:postId/:commentId", async (req, res) => {
         const result = await postDao.editComment(postId, commentId, content, userId);
         if (result.affectedRows !== 0) {
             console.log("Comment successfully edited");
-            res.redirect(`/#post-${postId}`);
+            res.redirect(`/#comment-${commentId}`);
         } else {
             console.error("Comment edited failed");
             res.redirect(`/#post-${postId}?message=comment_edited_failed`);

@@ -63,3 +63,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// After creating or editing a comment, this expands the hidden comment section so the page can redirect back to where the user made the change.
+document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash;
+
+    if (hash && hash.startsWith('#comment-')) {
+        const targetComment = document.querySelector(hash);
+        if (targetComment) {
+            const postCard = targetComment.closest('.post-card');
+            if (postCard) {
+                const commentsContainer = postCard.querySelector('.post-comments-container');
+                commentsContainer.classList.toggle('active');
+            }
+        }
+        // Force a precise re-scroll via scrollIntoView to prevent premature scrolling before the container is fully rendered.
+        setTimeout(() => {
+            targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }, 100);
+    }
+})
