@@ -85,7 +85,7 @@ router.post("/create", async function (req, res) {
         res.redirect("/account/create?failMessage=Register failed!");
     }
 })
-//todo: deal with createProfile page when user already create new account but cancel this page
+
 router.get("/createProfile", function (req, res) {
     if (!req.session.userId) {
         return res.redirect("./create");
@@ -125,6 +125,5 @@ router.get("/checkUser", async function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 })
-
 
 module.exports = router;
