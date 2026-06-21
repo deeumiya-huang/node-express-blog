@@ -20,20 +20,21 @@ async function retrieveAllPost(userId) {
          ORDER BY p.post_at DESC;`,
         [userId]
     );
+    // if l.user_id = userId, which means we can find the data in web_post_likes table that the user like the post.
+    // So l.user_id will not be null and return 1 as userHasLiked, vice versa.
     return posts;
 }
 
 async function retrievePersonalPost(userId) {
     const db = await database;
     const posts = await db.query(
-        `SELECT p.*, u.username, pr.avatar, 
-                    IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
-         FROM web_posts p
-         INNER JOIN web_users u ON u.id = p.author_id
-         INNER JOIN web_user_profiles pr ON u.id = pr.user_id
-         LEFT JOIN web_post_likes l ON p.id = l.post_id AND l.user_id = ?
-         WHERE p.author_id = ?
-         ORDER BY p.post_at DESC;`,
+        `SELECT p.*, u.username, pr.avatar, IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
+                 FROM web_posts p
+                 INNER JOIN web_users u ON u.id = p.author_id
+                 INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+                 LEFT JOIN web_post_likes l ON p.id = l.post_id AND l.user_id = ?
+                 WHERE p.author_id = ?
+                 ORDER BY p.post_at DESC;`,
         [userId, userId]
     );
     return posts;
@@ -88,7 +89,6 @@ async function buildCommentTree(flatList, userId, isAuthor) {
             tree.push(currentItem);
         }
     });
-
 
     validateReplyPermission(tree, 1); // check from level one
     return tree;
@@ -201,15 +201,6 @@ async function toggleLike(postId, userId, isLikeAction) {
     return row ? row.likes : 0;
 }
 
-async function hasUserLikedPost(postId, userId) {
-    const db = await database;
-    const [row] = await db.query(
-        `SELECT 1 FROM web_post_likes WHERE post_id = ? AND user_id = ?;`,
-        [postId, userId]
-    );
-    return !!row; // return true if data was found, otherwise return false.
-}
-
 module.exports = {
     createPost,
     retrieveAllPost,
@@ -221,5 +212,4 @@ module.exports = {
     deleteComment,
     editComment,
     toggleLike,
-    hasUserLikedPost,
 };

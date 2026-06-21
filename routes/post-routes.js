@@ -14,10 +14,9 @@ const userDao = require("../db/users-dao.js");
 const auth = require("../middleware/auth.js");
 const bcrypt = require("bcryptjs");
 
-//check user before every request in this router file
+// Check user before every request in this router file. Because routers in this file can only be run when the user log in.
 router.use(auth.verifyAuthenticated);
 
-//todo: check user before create post
 router.post('/createPost', upload.single('postImage'), async (req, res) => {
     try {
         const {category, title, content} = req.body;
