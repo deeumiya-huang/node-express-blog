@@ -117,7 +117,7 @@ router.get("/editProfile", async (req, res) => {
     res.locals.user = req.session.user;
     res.locals.isEdit = true;
     res.locals.layout = null;
-    res.render("account/create-profile");
+    res.render("account/profile");
 })
 
 router.post("/editProfile", async (req, res) => {

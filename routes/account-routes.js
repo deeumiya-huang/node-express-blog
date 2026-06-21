@@ -91,7 +91,7 @@ router.get("/createProfile", function (req, res) {
         return res.redirect("./create");
     }
     res.locals.layout = null;
-    res.render("account/create-profile");
+    res.render("account/profile");
 })
 
 router.post("/createProfile", async function (req, res) {
