@@ -1,4 +1,4 @@
--- Your database initialisation SQL here
+-- Database initialization SQL here
 DROP TABLE IF EXISTS web_post_likes;
 DROP TABLE IF EXISTS web_comments;
 DROP TABLE IF EXISTS web_posts;

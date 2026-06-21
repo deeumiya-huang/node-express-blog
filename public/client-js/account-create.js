@@ -1,4 +1,3 @@
-import {logger} from "./Logger.js";
 
 const form = document.querySelector('#signup-form');
 const inputUsername = document.querySelector('#username');
@@ -33,7 +32,7 @@ inputUsername.addEventListener('blur', async function (e) {
             isUsernameValid = true;
         }
     } catch (error) {
-        logger.error(error);
+        console.error(error);
         usernameMsg.textContent = '⚠️Please check internet connection. Unable to check username availability';
         usernameMsg.className = 'msg-warning';
         isUsernameValid = false;

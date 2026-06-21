@@ -3,7 +3,6 @@ const router = express.Router();
 
 const userDao = require("../db/users-dao.js");
 const bcrypt = require('bcryptjs');
-const {logger} = require("../public/client-js/Logger");
 
 // check if user already login
 router.use(function (req, res, next) {
@@ -54,7 +53,7 @@ router.get("/logout", function (req, res) {
         // delete req.session.user;
         req.session.destroy(function(err) {
             if(err) {
-                logger.error(err);
+                console.error(err);
                 return res.redirect("/?message=Logout failed");
             }
             res.redirect("/account/login?successMessage=Successfully logged out!");
@@ -82,7 +81,7 @@ router.post("/create", async function (req, res) {
         req.session.userId = userId; // for createProfile form to send data with same user id.
         res.redirect("/account/createProfile")
     } catch (e) {
-        logger.error("register new account failed.",e);
+        console.error("register new account failed.",e);
         res.redirect("/account/create?failMessage=Register failed!");
     }
 })
@@ -104,7 +103,7 @@ router.post("/createProfile", async function (req, res) {
         delete req.session.userId;
         res.redirect("/account/login?successMessage=Register successfully!");
     } catch (e) {
-        logger.error("Save profile failed.", e);
+        console.error("Save profile failed.", e);
         res.redirect("/account/createProfile?failMessage=Failed to save profile.");
     }
 })
@@ -122,7 +121,7 @@ router.get("/checkUser", async function (req, res) {
             hasUser: hasUser
         })
     } catch (e) {
-        logger.error("can't connect to db", e);
+        console.error("can't connect to db", e);
         res.status(500).json({ error: "Internal Server Error" });
     }
 })
