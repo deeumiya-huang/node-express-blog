@@ -81,7 +81,7 @@ fileInput.addEventListener('change', function () {
     }
 });
 
-// wrap quill html into hidden input before submit form
+// wrap quill HTML into hidden input before submit form
 postForm.addEventListener('submit', function (e) {
     const quillHtml = quill.getSemanticHTML();
 

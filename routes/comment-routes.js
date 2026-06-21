@@ -4,6 +4,7 @@ const router = express.Router();
 const postDao = require("../db/post-dao.js");
 const auth = require("../middleware/auth.js");
 
+// Check user before every request in this router file. Because routers in this file can only be run when the user log in.
 router.use(auth.verifyAuthenticated);
 
 router.post("/deleteComment/:postId/:commentId", async (req, res) => {
