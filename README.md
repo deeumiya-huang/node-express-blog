@@ -96,8 +96,8 @@ The backend follows a modular design, decoupling routing logic into specific dom
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/deeumiya-huang/node-express-blog.git
+cd node-express-blog
 ```
 
 ### 2. Install dependencies
