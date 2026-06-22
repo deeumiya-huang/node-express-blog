@@ -1,4 +1,7 @@
 -- Database initialization SQL here
+CREATE DATABASE IF NOT EXISTS web_db;
+USE web_db;
+
 DROP TABLE IF EXISTS web_post_likes;
 DROP TABLE IF EXISTS web_comments;
 DROP TABLE IF EXISTS web_posts;
