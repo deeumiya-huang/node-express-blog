@@ -1,8 +1,15 @@
-# DevBlog: Full-Stack Blogging & Social Platform
+# 🎨Blog: Full-Stack Blogging & Social Platform
 
-A responsive, feature-rich content management and blogging web application built from scratch. This platform supports secure user authentication, dynamic front-end interactions without full page reloads, a multi-level nested comment system, and an integrated Rich Text WYSIWYG editor.
+A responsive blog web application built from scratch. 
+This platform supports user authentication, front-end interactions without full page reloads, a multi-level nested comment system, and an integrated WYSIWYG editor.
 
-Developed as a capstone project, demonstrating full-stack JavaScript capabilities, relational database integrity, and modern UI/UX principles.
+---
+## 🛠️ Tech Stack
+
+* **Backend:** Node.js, Express.js
+* **Frontend:** JavaScript (ES6+), Handlebars.js (Templating Engine), HTML5, CSS3
+* **WYSIWYG Library:** Quill.js
+* **Database:** MariaDB
 
 ---
 ## 📸 Demo
@@ -20,16 +27,6 @@ Developed as a capstone project, demonstrating full-stack JavaScript capabilitie
 ![comment](assets/comment.gif)
 
 ---
-
-## 🛠️ Tech Stack
-
-* **Backend:** Node.js, Express.js
-* **Frontend:** JavaScript (ES6+), Handlebars.js (Templating Engine), HTML5, CSS3
-* **WYSIWYG Library:** Quill.js
-* **Database:** MariaDB
-
----
-
 ## 📁 Project Architecture & Router Structure
 
 The backend follows a modular design, decoupling routing logic into specific domains for maintainability:
@@ -95,7 +92,7 @@ The backend follows a modular design, decoupling routing logic into specific dom
 ### Prerequisites
 * Node.js (v16.x or higher)
 * npm
-* * MariaDB Server installed and running
+* MariaDB Server installed and running
 
 ### 1. Clone the repository
 ```bash
