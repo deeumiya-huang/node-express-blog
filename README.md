@@ -62,8 +62,8 @@ The backend follows a modular design, decoupling routing logic into specific dom
 ## 🚀 Key Features
 
 ### 💬 Nested Comment System
-* **Recursive Tree-Based Nesting:** Design a multi-level nested reply system (up to 2 levels: Comment ➡️ Reply ➡️ Sub-reply) by modeling comments as a **Tree Data Structure** (using self-referencing `parent_id` relations). 
-    Use recursion during rendering to dynamically build, sort chronologically, and visually indent nested reply threads.* 
+* **Recursive Tree-Based Nesting:** Design a multi-level nested reply system (up to 3 levels: Comment ➡️ Reply ➡️ Sub-reply) by modeling comments as a **Tree Data Structure** (using self-referencing `parent_id` relations).
+    Comments are loaded in creation order with a single SQL query, built into a tree, and rendered recursively with a Handlebars partial.
 * **Flexible Moderation:** Comment authors can delete their own comments, while article authors hold full deletion privileges over any comment under their articles.
 * **Collapsible UI:** Users can toggle the visibility of the comment section for a cleaner reading experience.
 
@@ -76,8 +76,8 @@ The backend follows a modular design, decoupling routing logic into specific dom
 ### 📝 Article Management
 * **WYSIWYG Rich Text Editing:** Integrated **Quill.js** to allow heading styles, bold, italic, underline, and list formatting without HTML exposure.
 * **Image Upload Support:** Built-in capability to upload and attach a featured image per article.
-* **Asynchronous Sorting (No Reload):** Client-side/AJAX sorting by Article Title, Username, or Date.
-* **Interaction System:** Secure like/unlike mechanism preventing duplicate likes per user, with live total counts.
+* **Client-Side Sorting (No Reload):** Sort posts by date, category, username or title instantly in the browser, without a page reload or extra server request.
+* **Interaction System:** Like/unlike via **AJAX (Fetch API)** without reloading the page; duplicate likes are prevented by a composite primary key, and the latest count is returned by the server.
 
 ### 🔒 Security Practices
 
