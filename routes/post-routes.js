@@ -67,6 +67,13 @@ async function saveUploadedImage(file) {
     return fileName;
 }
 
+// Remove an image saved by saveUploadedImage (e.g. when the post update fails). Does nothing if fileName is empty.
+function deleteImage(fileName) {
+    if (!fileName) return;
+    fs.rmSync(path.join(POST_IMG_DIR, fileName), { force: true });
+    fs.rmSync(path.join(POST_THUMBNAIL_DIR, fileName), { force: true });
+}
+
 // Check user before every request in this router file. Because routers in this file can only be run when the user log in.
 router.use(auth.verifyAuthenticated);
 
@@ -106,10 +113,11 @@ router.post('/createPost', uploadPostImage, async (req, res) => {
 });
 
 router.post("/editPost/:postId", uploadPostImage, async (req, res) => {
-    const { postId ,category, title, content} = req.body;
+    const postId = req.params.postId;
+    const { category, title, content } = req.body;
     const userId = req.session.user.id;
+    let newImgName = undefined; // set default undefined, which means no need to update img.
     try {
-        let newImgName = undefined; // set default undefined, which means no need to update img.
 
         // check if any photo was uploaded.
         if (req.file) {
@@ -126,9 +134,15 @@ router.post("/editPost/:postId", uploadPostImage, async (req, res) => {
         if (result.affectedRows !== 0) {
             console.log("Post successfully edit");
             res.redirect(`/#post-${postId}`);
+        } else {
+            // Nothing matched "id = postId AND author_id = userId": the post doesn't exist, or it belongs to someone else.
+            // Reply 404 in both cases, so a user can't find out which post ids exist by trying other people's posts.
+            deleteImage(newImgName); // the new image won't be used, so don't leave it on disk
+            res.status(404).send('Post not found');
         }
     } catch (error) {
-        console.log(error);
+        console.error("edit post failed", error);
+        deleteImage(newImgName);
         res.status(500).send('Post edit failed');
     }
 })
