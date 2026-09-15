@@ -46,11 +46,19 @@ app.use(mainRouter);
 const accountRouter = require("./routes/account-routes.js");
 app.use("/account", accountRouter);
 
+// JSON REST API (JWT auth). Must be mounted BEFORE postRouter: postRouter runs router.use(auth.verifyAuthenticated)
+// for every request that reaches it, which would redirect API clients (no session cookie) to the home page.
+const api = require("./routes/api-routes.js");
+app.use("/api", api.router);
+
 const postRouter = require("./routes/post-routes.js");
 app.use(postRouter);
 
 const commentRouter = require("./routes/comment-routes.js");
 app.use(commentRouter);
+
+// Error handler for /api (including invalid JSON bodies from express.json above): always reply in JSON
+app.use("/api", api.handleApiError);
 
 app.listen(port, function () {
     console.log(`Web final project listening on http://localhost:${port}/`);

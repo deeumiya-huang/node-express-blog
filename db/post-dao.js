@@ -37,6 +37,20 @@ async function retrievePersonalPost(userId) {
     return posts;
 }
 
+// Returns one post (with the author's username and avatar), or undefined if it doesn't exist.
+// Uses the same JOINs as retrieveAllPost, so a post is found here exactly when it appears in the list.
+async function retrievePostById(postId) {
+    const posts = await db.query(
+        `SELECT p.*, u.username, pr.avatar
+         FROM web_posts p
+         INNER JOIN web_users u ON u.id = p.author_id
+         INNER JOIN web_user_profiles pr ON u.id = pr.user_id
+         WHERE p.id = ?;`,
+        [postId]
+    );
+    return posts[0];
+}
+
 // Load the comments of all the given posts in ONE query, then build a comment tree for each post.
 // Returns a Map of post id -> comment tree.
 // (The old version ran 2 queries per post plus 1 query per comment to get the commenter's name and avatar,
@@ -211,6 +225,7 @@ module.exports = {
     retrieveCommentsByPosts,
     createComment,
     retrievePersonalPost,
+    retrievePostById,
     deletePost,
     editPost,
     deleteComment,

@@ -6,7 +6,7 @@ This platform supports user authentication, front-end interactions without full 
 ---
 ## 🛠️ Tech Stack
 
-* **Backend:** Node.js, Express.js
+* **Backend:** Node.js, Express.js, REST API with JWT (jsonwebtoken)
 * **Frontend:** JavaScript (ES6+), Handlebars.js (Templating Engine), HTML5, CSS3
 * **WYSIWYG Library:** Quill.js
 * **Database:** MariaDB
@@ -33,12 +33,16 @@ The backend follows a modular design, decoupling routing logic into specific dom
 
 ```text
 ├── public/                 # Static assets (client-side JS, CSS, images)
-├── middleware/             # Authentication middleware for routes to use 
+├── middleware/             # Authentication middleware for routes to use
+│   ├── auth.js             # Session check for the web pages
+│   └── jwt-auth.js         # JWT Bearer token check for the REST API
 ├── routes/                 # Express modular routers
 │   ├── main-routes.js      # Publicly accessible routes
 │   ├── account-routes.js   # Auth routes (Register, Login, Profile Edit/Delete)
 │   ├── post-routes.js      # Article operations (CRUD, Likes, Image uploads)
-│   └── comment-routes.js   # Nested comment operations (Create, Edit, Delete)
+│   ├── comment-routes.js   # Nested comment operations (Create, Edit, Delete)
+│   └── api-routes.js       # JSON REST API for posts (see "REST API" below)
+├── utils/                  # Helpers shared by page routes and the API (HTML sanitizing)
 ├── views/                  # Handlebars views and layouts
 │   ├── account/            
 │   ├── layouts/            # Two layouts for different url to use
@@ -79,6 +83,35 @@ The backend follows a modular design, decoupling routing logic into specific dom
 * **Client-Side Sorting (No Reload):** Sort posts by date, category, username or title instantly in the browser, without a page reload or extra server request.
 * **Interaction System:** Like/unlike via **AJAX (Fetch API)** without reloading the page; duplicate likes are prevented by a composite primary key, and the latest count is returned by the server.
 
+### 🔌 REST API
+Besides the server-rendered pages (HTML forms, session login), the app exposes a JSON REST API for posts under `/api`.
+Reading is public; creating, updating and deleting require a **JWT Bearer token**.
+
+| Method | Endpoint | Auth | Success | Errors |
+|---|---|---|---|---|
+| `POST` | `/api/auth/token` | – | `200` token | `400` missing fields, `401` wrong credentials |
+| `GET` | `/api/posts` | – | `200` list of posts | – |
+| `GET` | `/api/posts/:id` | – | `200` post | `400` invalid id, `404` not found |
+| `POST` | `/api/posts` | JWT | `201` created post + `Location` header | `400` invalid body, `401` no/invalid token |
+| `PUT` | `/api/posts/:id` | JWT | `200` updated post | `400`, `401`, `404` not found or not your post |
+| `DELETE` | `/api/posts/:id` | JWT | `204` no content | `400`, `401`, `404` not found or not your post |
+
+Example:
+```bash
+# 1. log in and get a token
+curl -X POST http://localhost:3000/api/auth/token \
+     -H "Content-Type: application/json" \
+     -d '{"username": "alice", "password": "secret"}'
+# -> {"access_token": "eyJ...", "token_type": "Bearer", "expires_in": 3600}
+
+# 2. create a post with the token
+curl -X POST http://localhost:3000/api/posts \
+     -H "Authorization: Bearer eyJ..." \
+     -H "Content-Type: application/json" \
+     -d '{"category": "tech", "title": "Hello API", "content": "<p>Posted with curl</p>"}'
+```
+`category` must be one of `mood`, `life`, `tech`, `economy`. Errors are returned as `{"error": "..."}`.
+
 ### 🔒 Security Practices
 
 * **SQL Injection Prevention:**  Uses **Prepared Statements**.
@@ -114,6 +147,7 @@ Open `.env` and fill in your values:
 ```env
 EXPRESS_PORT=3000
 SESSION_SECRET=your_super_secret_session_key
+JWT_SECRET=another_long_random_string
 
 # MariaDB Connection Details
 DB_HOST=localhost
