@@ -5,8 +5,9 @@ const fs = require("fs");
 const sharp = require("sharp");
 const path = require("path");
 const multer = require("multer");
+// multer stores uploads in the project-level temp/ folder first (git-ignored), then the route moves them into public/
 const upload = multer({
-    dest: path.join(__dirname, "temp")
+    dest: path.join(__dirname, "..", "temp")
 });
 const sanitizeHtml = require('sanitize-html');
 const postDao = require("../db/post-dao.js");
