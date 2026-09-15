@@ -14,7 +14,8 @@ inputUsername.addEventListener('blur', async function (e) {
     const username = this.value;
 
     try {
-        const response = await fetch(`/account/checkUser?username=${username}`);
+        // encode the username so characters like & # + or spaces don't break the query string
+        const response = await fetch(`/account/checkUser?username=${encodeURIComponent(username)}`);
 
         if (!response.ok) {
             throw new Error(`Server returned status ${response.status}`);
