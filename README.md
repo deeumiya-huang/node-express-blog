@@ -47,7 +47,7 @@ The backend follows a modular design, decoupling routing logic into specific dom
 ├── db/                     # Set up database and all the SQL query functions
 │   ├── db-connect.js       # connect to database
 │   ├── post-dao.js         # functions related to posts/comments/likes tables
-│   └── user-dao.js         # functions related to users/user_profiles tables
+│   └── users-dao.js        # functions related to users/user_profiles tables
 ├── .env.sample             # Template for required environment variables
 ├── *app.js*                # Main server entry point
 ├── init-db.sql             # initialize required schema in DB
@@ -90,7 +90,7 @@ The backend follows a modular design, decoupling routing logic into specific dom
 ## ⚙️ Installation & Setup
 
 ### Prerequisites
-* Node.js (v16.x or higher)
+* Node.js (v20 or higher)
 * npm
 * MariaDB Server installed and running
 
@@ -118,9 +118,10 @@ SESSION_SECRET=your_super_secret_session_key
 # MariaDB Connection Details
 DB_HOST=localhost
 DB_USER=your_mariadb_user
-DB_PASS=your_mariadb_password
-DB_NAME=devblog_db
+DB_PASSWORD=your_mariadb_password
+DB_DATABASE=web_db
 ```
+`DB_DATABASE` must be `web_db`, which is the database created by `init-db.sql` in the next step.
 
 ### 4. Init your database
 ```bash
@@ -130,8 +131,7 @@ mysql -u your_mariadb_user -p < init-db.sql
 
 ### 5. Run the application
 ```bash
-# To start the server
-node app.js
+npm start
 ```
 The server will start, and you can access it at `http://localhost:3000/`.
 

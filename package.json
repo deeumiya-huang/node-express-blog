@@ -1,9 +1,15 @@
 {
   "name": "web-final-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Full-stack blogging and social platform built with Node.js, Express and MariaDB",
   "main": "app.js",
   "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
