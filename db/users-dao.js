@@ -47,6 +47,19 @@ async function retrieveProfileById(userId) {
     return profile[0];
 }
 
+// Build the object stored in req.session.user: only the fields the pages need.
+// Never put password_hash in the session (least privilege: the session doesn't need it).
+async function retrieveSessionUser(userId) {
+    const db = await database;
+    const users = await db.query(
+        "select id, username from web_users where id = ?",
+        [userId]);
+    if (!users[0]) return undefined;
+
+    const profile = await retrieveProfileById(userId);
+    return { id: users[0].id, username: users[0].username, profile: profile };
+}
+
 async function updateCredential(userId, username, hashedPassword) {
     const db = await database;
     return await db.query(
@@ -85,6 +98,7 @@ module.exports = {
     retrieveUserByUsername,
     createUserProfile,
     retrieveProfileById,
+    retrieveSessionUser,
     updateUsername,
     updateCredential,
     updateProfile,

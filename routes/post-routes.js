@@ -179,15 +179,14 @@ router.post("/editProfile", async (req, res) => {
         if (password === ""){
             await userDao.updateUsername(userId, username);
         } else {
-            const saltRounds = 5;
+            const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             await userDao.updateCredential(userId, username, hashedPassword);
         }
-        // session has to change after edit!
-        req.session.user = await userDao.retrieveUserByUsername(username);
-
         await userDao.updateProfile(userId, forename, surname, bio, selected_avatar);
-        req.session.user.profile = await userDao.retrieveProfileById(userId);
+
+        // session has to change after edit! (only id / username / profile, never password_hash)
+        req.session.user = await userDao.retrieveSessionUser(userId);
         res.redirect("/?success=profile_updated");
     } catch (e) {
         console.error(e);

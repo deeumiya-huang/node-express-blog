@@ -35,9 +35,14 @@ router.post("/login", async function (req, res) {
             // user regenerate session to prevent hacker get user's session id before they log in.
             req.session.regenerate(async (err) => {
                 if (err) return res.redirect("/account/login?failMessage=Authentication failed!");
-                req.session.user = user;
-                req.session.user.profile = await userDao.retrieveProfileById(user.id);
-                res.redirect("/");
+                try {
+                    // store only id / username / profile, not the whole user row (which includes password_hash)
+                    req.session.user = await userDao.retrieveSessionUser(user.id);
+                    res.redirect("/");
+                } catch (e) {
+                    console.log("login error:", e);
+                    res.status(500).send("Login error");
+                }
             })
         } else {
             res.redirect("/account/login?failMessage=Authentication failed!");
@@ -75,7 +80,7 @@ router.post("/create", async function (req, res) {
 
     try {
         const { username, password } = req.body;
-        const saltRounds = 5;
+        const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const userId = await userDao.createUser(username, hashedPassword);
         req.session.userId = userId; // for createProfile form to send data with same user id.
