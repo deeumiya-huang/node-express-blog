@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const userDao = require("../db/users-dao.js");
 
-// If we forget to set JWT_SECRET, it will become undefined, which cause jwt can't encrypt the password.
+// Fail-fast security check: Prevent signing or verifying tokens with an missing/empty secret.
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not set. Add it to your .env file (see .env.sample).");
