@@ -4,12 +4,12 @@ const router = express.Router();
 const postDao = require("../db/post-dao.js");
 const userDao = require("../db/users-dao.js");
 const auth = require("../middleware/auth.js");
+const { cleanPostContent } = require("../utils/post-content.js");
 
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const fs = require("fs");
 const multer = require("multer");
-const sanitizeHtml = require('sanitize-html');
 const sharp = require("sharp");
 const path = require("path");
 
@@ -72,15 +72,6 @@ function deleteImage(fileName) {
     if (!fileName) return;
     fs.rmSync(path.join(POST_IMG_DIR, fileName), { force: true });
     fs.rmSync(path.join(POST_THUMBNAIL_DIR, fileName), { force: true });
-}
-
-// Post content comes from the Quill editor as HTML, so it is rendered with {{{ }}} (unescaped) on the home page.
-// Keep only the tags Quill produces and strip every attribute, e.g. <img onerror="..."> or <p onclick="...">, to prevent XSS.
-function cleanPostContent(content) {
-    return sanitizeHtml(content, {
-        allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
-        allowedAttributes: {}
-    });
 }
 
 // Check user before every request in this router file. Because routers in this file can only be run when the user log in.
