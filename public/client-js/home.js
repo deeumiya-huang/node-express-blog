@@ -54,11 +54,20 @@ sortSelect.addEventListener('change', async function () {
     posts.forEach((post) => {postsContainer.appendChild(post)});
 })
 
+const isLoggedIn = document.querySelector('.main-container')?.dataset.loggedIn === 'true';
+const likeLoginUrl = `/account/login?failMessage=${encodeURIComponent('Please log in to like posts')}`;
+
 document.body.addEventListener('click', async (event) => {
     const likeBtn = event.target.closest('.action-btn[title="Like"]');
     if (!likeBtn) return;
 
     event.preventDefault();
+
+    // Only logged-in users can like: send guests to the login page instead of changing the count
+    if (!isLoggedIn) {
+        window.location.href = likeLoginUrl;
+        return;
+    }
 
     const countSpan = likeBtn.querySelector('span');
     let currentLikes = parseInt(countSpan.textContent) || 0;
@@ -79,9 +88,15 @@ document.body.addEventListener('click', async (event) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json', // so the server answers 401 (not a redirect) if the session expired
             },
             body: JSON.stringify({ isLikeAction: !isLiked })
         });
+        if (response.status === 401) {
+            // the session expired while the page was open
+            window.location.href = likeLoginUrl;
+            return;
+        }
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -94,7 +109,7 @@ document.body.addEventListener('click', async (event) => {
         console.error('Like failed:', error);
         // Revert frontend state if the backend request fails
         likeBtn.classList.toggle('liked');
-        countSpan.innerText = isLiked ? currentLikes : currentLikes - 1;
+        countSpan.textContent = currentLikes; // back to the count from before the click
         alert('can\'t link to server, please try it later.');
     }
 })

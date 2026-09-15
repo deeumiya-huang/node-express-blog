@@ -5,7 +5,7 @@
 <!-- post modal(default: hidden) -->
 {{> postModal}}
 
-<main class="main-container">
+<main class="main-container" data-logged-in="{{#if user}}true{{else}}false{{/if}}">
 
     <!-- Sorting Filter Section -->
     <div class="filter-section">
