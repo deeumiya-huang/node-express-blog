@@ -1,14 +1,6 @@
 
 const db = require("./db-connect.js");
 
-async function findUserByUsername(username) {
-    const user = await db.query(
-        "select * from web_users where username = ?",
-        [username]);
-
-    return await user[0];
-}
-
 async function createUser(username, hashedPassword) {
     const result = await db.query(
         `insert into web_users (username, password_hash) values (?,?)`,
@@ -80,7 +72,6 @@ async function deleteUser(userId) {
 }
 
 module.exports = {
-    findUserByUsername,
     createUser,
     retrieveUserByUsername,
     createUserProfile,

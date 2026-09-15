@@ -117,7 +117,7 @@ router.post("/createProfile", async function (req, res) {
 router.get("/checkUser", async function (req, res) {
     const username = req.query.username;
     try {
-        const user = await userDao.findUserByUsername(username);
+        const user = await userDao.retrieveUserByUsername(username);
         let hasUser = true;
         if (!user) {
          hasUser = false;

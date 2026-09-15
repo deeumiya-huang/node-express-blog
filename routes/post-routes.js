@@ -74,6 +74,15 @@ function deleteImage(fileName) {
     fs.rmSync(path.join(POST_THUMBNAIL_DIR, fileName), { force: true });
 }
 
+// Post content comes from the Quill editor as HTML, so it is rendered with {{{ }}} (unescaped) on the home page.
+// Keep only the tags Quill produces and strip every attribute, e.g. <img onerror="..."> or <p onclick="...">, to prevent XSS.
+function cleanPostContent(content) {
+    return sanitizeHtml(content, {
+        allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
+        allowedAttributes: {}
+    });
+}
+
 // Check user before every request in this router file. Because routers in this file can only be run when the user log in.
 router.use(auth.verifyAuthenticated);
 
@@ -85,17 +94,12 @@ router.post('/createPost', uploadPostImage, async (req, res) => {
             imgName = await saveUploadedImage(req.file);
         }
 
-        const cleanContent = sanitizeHtml(content, {
-            allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
-            allowedAttributes: {} // doesn't allow any dirty attribute like <img onerror="...">
-        });
-
         // store into db
         const post = {
             author_id: req.session.user.id,
             category: category,
             title: title,
-            content: cleanContent,
+            content: cleanPostContent(content),
             img_name: imgName,
         }
 
@@ -124,13 +128,8 @@ router.post("/editPost/:postId", uploadPostImage, async (req, res) => {
             newImgName = await saveUploadedImage(req.file); // record new image name.
         }
 
-        const cleanContent = sanitizeHtml(content, {
-            allowedTags: [ 'h1', 'h2', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'u' ],
-            allowedAttributes: {}
-        });
-
         // if no new image upload, newImgName remain undefined.
-        const result = await postDao.editPost(postId, category, title, cleanContent, newImgName, userId);
+        const result = await postDao.editPost(postId, category, title, cleanPostContent(content), newImgName, userId);
         if (result.affectedRows !== 0) {
             console.log("Post successfully edit");
             res.redirect(`/#post-${postId}`);
