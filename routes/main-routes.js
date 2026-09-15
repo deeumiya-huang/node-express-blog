@@ -35,12 +35,13 @@ router.get("/personalPage",auth.verifyAuthenticated, async (req, res) => {
 })
 
 async function getPostsComments(posts, userId) {
-    const promises = posts.map(async (post) => {
+    // one query for the comments of every post, instead of one query per post
+    const commentTrees = await postDao.retrieveCommentsByPosts(posts, userId);
+    posts.forEach(post => {
         post.isAuthor = String(post.author_id) === String(userId);
-        post.comments = await postDao.retrieveComments(post.id, userId);
-        return post;
-    })
-    return await Promise.all(promises);
+        post.comments = commentTrees.get(post.id);
+    });
+    return posts;
 }
 
 module.exports = router;

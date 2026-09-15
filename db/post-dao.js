@@ -40,30 +40,53 @@ async function retrievePersonalPost(userId) {
     return posts;
 }
 
-async function retrieveComments(postId, userId) {
+// Load the comments of all the given posts in ONE query, then build a comment tree for each post.
+// Returns a Map of post id -> comment tree.
+// (The old version ran 2 queries per post plus 1 query per comment to get the commenter's name and avatar,
+//  so the home page needed 1 + posts × (2 + comments) queries. This is the classic "N+1 query" problem.)
+async function retrieveCommentsByPosts(posts, userId) {
+    const treesByPostId = new Map();
+    if (posts.length === 0) return treesByPostId; // "IN ()" is invalid SQL
+
     const db = await database;
+    // JOIN the commenter's username/avatar here instead of looking them up one comment at a time.
+    // LEFT JOIN on profiles so a comment is still shown even if its author never created a profile.
     const comments = await db.query(
-        `SELECT * FROM web_comments WHERE post_id = ?`,
-        [postId]
-    )
-    const authorId = await getPostAuthorId(postId);
-    let isAuthor = String(userId) === String(authorId);
+        `SELECT c.*, u.username, pr.avatar
+         FROM web_comments c
+         INNER JOIN web_users u ON u.id = c.commenter_id
+         LEFT JOIN web_user_profiles pr ON pr.user_id = c.commenter_id
+         WHERE c.post_id IN (?)
+         ORDER BY c.id;`,
+        [posts.map(post => post.id)]
+    );
 
-    const resultTree = await buildCommentTree(comments, userId, isAuthor);
-    return resultTree;
+    // group the flat comment list by post
+    const commentsByPostId = new Map();
+    comments.forEach(comment => {
+        if (!commentsByPostId.has(comment.post_id)) {
+            commentsByPostId.set(comment.post_id, []);
+        }
+        commentsByPostId.get(comment.post_id).push(comment);
+    });
 
+    // the post author is already known from the posts query, so no extra query is needed for it
+    posts.forEach(post => {
+        const isAuthor = String(userId) === String(post.author_id);
+        const postComments = commentsByPostId.get(post.id) || [];
+        treesByPostId.set(post.id, buildCommentTree(postComments, userId, isAuthor));
+    });
+    return treesByPostId;
 }
 
-async function buildCommentTree(flatList, userId, isAuthor) {
+function buildCommentTree(flatList, userId, isAuthor) {
     const map = {};
     const tree = [];
 
-    const promises = flatList.map(async (item) => {
-        const author = await getAuthorInfo(item.commenter_id);
-
+    flatList.forEach(item => {
         map[item.id] = {
             id: item.id,
-            author: author,
+            author: { username: item.username, avatar: item.avatar },
             content: item.content,
             post_at: item.post_at,
             permissions: {
@@ -74,8 +97,6 @@ async function buildCommentTree(flatList, userId, isAuthor) {
             comments: []
         };
     });
-
-    await Promise.all(promises);
 
     flatList.forEach(item => {
         const currentItem = map[item.id];
@@ -106,26 +127,6 @@ function validateReplyPermission(nodes, currentLevel) {
             validateReplyPermission(node.comments, currentLevel + 1);
         }
     });
-}
-
-async function getPostAuthorId(postId) {
-    const db = await database;
-    const result = await db.query(
-        `select author_id from web_posts where id = ?`,
-        [postId]
-    );
-    return result[0] ? String(result[0].author_id) : null;
-
-}
-
-async function getAuthorInfo(authorId) {
-    const db = await database;
-
-    const profile = await db.query(
-        `select u.username, p.avatar from web_users u INNER JOIN web_user_profiles p ON u.id = p.user_id where u.id = ?`,
-        [authorId]);
-
-    return profile[0];
 }
 
 async function createComment(postId, userId, content, parentId) {
@@ -217,7 +218,7 @@ async function toggleLike(postId, userId, isLikeAction) {
 module.exports = {
     createPost,
     retrieveAllPost,
-    retrieveComments,
+    retrieveCommentsByPosts,
     createComment,
     retrievePersonalPost,
     deletePost,
