@@ -1,9 +1,7 @@
 
-const database = require("./db-connect.js");
+const db = require("./db-connect.js");
 
 async function findUserByUsername(username) {
-    const db = await database;
-
     const user = await db.query(
         "select * from web_users where username = ?",
         [username]);
@@ -12,7 +10,6 @@ async function findUserByUsername(username) {
 }
 
 async function createUser(username, hashedPassword) {
-    const db = await database;
     const result = await db.query(
         `insert into web_users (username, password_hash) values (?,?)`,
         [username, hashedPassword],);
@@ -20,8 +17,6 @@ async function createUser(username, hashedPassword) {
 }
 
 async function retrieveUserByUsername(username) {
-    const db = await database;
-
     const user = await db.query(
         "select * from web_users where username = ?",
         [username]);
@@ -30,7 +25,6 @@ async function retrieveUserByUsername(username) {
 }
 
 async function createUserProfile(userId, forename, surname, bio, selected_avatar) {
-    const db = await database;
     const result = await db.query(
         `insert into web_user_profiles (user_id, forename, surname, bio, avatar) values (?,?,?,?,?)`,
         [userId, forename, surname, bio, selected_avatar]);
@@ -38,8 +32,6 @@ async function createUserProfile(userId, forename, surname, bio, selected_avatar
 }
 
 async function retrieveProfileById(userId) {
-    const db = await database;
-
     const profile = await db.query(
         "select * from web_user_profiles where user_id = ?",
         [userId]);
@@ -50,7 +42,6 @@ async function retrieveProfileById(userId) {
 // Build the object stored in req.session.user: only the fields the pages need.
 // Never put password_hash in the session (least privilege: the session doesn't need it).
 async function retrieveSessionUser(userId) {
-    const db = await database;
     const users = await db.query(
         "select id, username from web_users where id = ?",
         [userId]);
@@ -61,7 +52,6 @@ async function retrieveSessionUser(userId) {
 }
 
 async function updateCredential(userId, username, hashedPassword) {
-    const db = await database;
     return await db.query(
         `UPDATE web_users SET username = ?, password_hash = ? WHERE id = ?;`,
         [username, hashedPassword, userId]
@@ -69,7 +59,6 @@ async function updateCredential(userId, username, hashedPassword) {
 }
 
 async function updateUsername(userId, username) {
-    const db = await database;
     return await db.query(
         `UPDATE web_users SET username = ? WHERE id = ?;`,
         [username, userId]
@@ -77,7 +66,6 @@ async function updateUsername(userId, username) {
 }
 
 async function updateProfile(userId, forename, surname, bio, avatar) {
-    const db = await database;
     return await db.query(
         `UPDATE web_user_profiles SET forename = ?, surname = ?, bio = ?, avatar = ? WHERE user_id = ?;`,
         [forename, surname, bio, avatar, userId]
@@ -85,7 +73,6 @@ async function updateProfile(userId, forename, surname, bio, avatar) {
 }
 
 async function deleteUser(userId) {
-    const db = await database;
     return await db.query(
         `DELETE FROM web_users WHERE id = ?;`,
         [userId]

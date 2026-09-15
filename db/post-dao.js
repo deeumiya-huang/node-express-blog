@@ -1,7 +1,6 @@
-const database = require('./db-connect.js');
+const db = require('./db-connect.js');
 
 async function createPost(post) {
-    const db = await database;
     const result = await db.query(
         `INSERT INTO web_posts(author_id, category, title, content, img_name) values (?,?,?,?,?)`,
         [post.author_id, post.category, post.title, post.content, post.img_name]);
@@ -9,7 +8,6 @@ async function createPost(post) {
 }
 
 async function retrieveAllPost(userId) {
-    const db = await database;
     const posts = await db.query(
         `SELECT p.*, u.username, pr.avatar,
                 IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
@@ -26,7 +24,6 @@ async function retrieveAllPost(userId) {
 }
 
 async function retrievePersonalPost(userId) {
-    const db = await database;
     const posts = await db.query(
         `SELECT p.*, u.username, pr.avatar, IF(l.user_id IS NOT NULL, 1, 0) AS userHasLiked
                  FROM web_posts p
@@ -48,7 +45,6 @@ async function retrieveCommentsByPosts(posts, userId) {
     const treesByPostId = new Map();
     if (posts.length === 0) return treesByPostId; // "IN ()" is invalid SQL
 
-    const db = await database;
     // JOIN the commenter's username/avatar here instead of looking them up one comment at a time.
     // LEFT JOIN on profiles so a comment is still shown even if its author never created a profile.
     const comments = await db.query(
@@ -130,7 +126,6 @@ function validateReplyPermission(nodes, currentLevel) {
 }
 
 async function createComment(postId, userId, content, parentId) {
-    const db = await database;
     const result = await db.query(
         `insert into web_comments (post_id, commenter_id, content, parent_id) values (?,?,?,?)`,
         [postId, userId, content, parentId]
@@ -139,7 +134,6 @@ async function createComment(postId, userId, content, parentId) {
 }
 
 async function deletePost(postId, userId) {
-    const db = await database;
     const result = await db.query(
         `DELETE FROM web_posts WHERE id = ? AND author_id = ?;`,
         [postId, userId]
@@ -148,7 +142,6 @@ async function deletePost(postId, userId) {
 }
 
 async function editPost(postId, category, title, content, imgName, userId) {
-    const db = await database;
     // if new imgName was passed, update the imgName field, otherwise skip it.
     if (imgName !== undefined) {
         const result = await db.query(
@@ -170,7 +163,6 @@ async function editPost(postId, category, title, content, imgName, userId) {
 }
 
 async function deleteComment(postId, commentId, userId) {
-    const db = await database;
     const result = await db.query(
         `DELETE c FROM web_comments c
             INNER JOIN web_posts p ON c.post_id = p.id
@@ -183,7 +175,6 @@ async function deleteComment(postId, commentId, userId) {
 }
 
 async function editComment(postId, commentId, content, userId) {
-    const db = await database;
     const result = await db.query(
         `UPDATE web_comments 
              SET content = ? ,
@@ -195,7 +186,6 @@ async function editComment(postId, commentId, content, userId) {
 }
 
 async function toggleLike(postId, userId, isLikeAction) {
-    const db = await database;
     if (isLikeAction) {
         // use IGNORE to prevent resend like
         await db.query(`INSERT IGNORE INTO web_post_likes (post_id, user_id) VALUES (?, ?);`, [postId, userId]);
