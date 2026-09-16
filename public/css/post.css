@@ -131,6 +131,30 @@ input[type="text"]:focus, select:focus {
     border-radius: 6px;
     object-fit: cover;
 }
+/* wrapper so the X button can sit on the image's top-right corner */
+.image-preview .preview-item {
+    position: relative;
+    display: inline-block;
+}
+.btn-remove-image {
+    position: absolute;
+    top: 16px; /* 10px image margin-top + 6px */
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+.btn-remove-image:hover { background-color: rgba(0, 0, 0, 0.8); }
 
 .modal-footer {
     display: flex;
