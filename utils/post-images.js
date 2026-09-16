@@ -4,6 +4,11 @@ const path = require("path");
 const POST_IMG_DIR = path.join(__dirname, "..", "public", "assets", "post-img");
 const POST_THUMBNAIL_DIR = path.join(__dirname, "..", "public", "assets", "post-thumbnail");
 
+// Uploaded images are not kept in git, so these folders may be missing after a fresh clone.
+// Create them at startup, otherwise the first upload fails with ENOENT.
+fs.mkdirSync(POST_IMG_DIR, { recursive: true });
+fs.mkdirSync(POST_THUMBNAIL_DIR, { recursive: true });
+
 // Remove a post image and its thumbnail from disk. Does nothing if fileName is empty (null / undefined).
 // Called whenever an image stops being used (post edited / deleted, account deleted),
 // so old files don't stay on disk as orphans.

@@ -17,3 +17,10 @@ jspm_packages/
 
 # multer temporary uploads
 temp/
+
+# Images uploaded by users belong to the database, not to the repo.
+# The demo-* files referenced by init-db.sql are the exception.
+public/assets/post-img/*
+public/assets/post-thumbnail/*
+!public/assets/post-img/demo-*
+!public/assets/post-thumbnail/demo-*

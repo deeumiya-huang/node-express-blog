@@ -52,9 +52,10 @@ The backend follows a modular design, decoupling routing logic into specific dom
 │   ├── db-connect.js       # connect to database
 │   ├── post-dao.js         # functions related to posts/comments/likes tables
 │   └── users-dao.js        # functions related to users/user_profiles tables
+├── scripts/init-db.js      # Creates the schema and loads the demo data (npm run init-db)
 ├── .env.sample             # Template for required environment variables
 ├── *app.js*                # Main server entry point
-├── init-db.sql             # initialize required schema in DB
+├── init-db.sql             # Schema + demo data (users, posts, nested comments, likes)
 └── package.json            # Dependencies and scripts
 ```
 
@@ -101,7 +102,7 @@ Example:
 # 1. log in and get a token
 curl -X POST http://localhost:3000/api/auth/token \
      -H "Content-Type: application/json" \
-     -d '{"username": "alice", "password": "secret"}'
+     -d '{"username": "alice", "password": "demo1234"}'
 # -> {"access_token": "eyJ...", "token_type": "Bearer", "expires_in": 3600}
 
 # 2. create a post with the token
@@ -155,19 +156,38 @@ DB_USER=your_mariadb_user
 DB_PASSWORD=your_mariadb_password
 DB_DATABASE=web_db
 ```
-`DB_DATABASE` must be `web_db`, which is the database created by `init-db.sql` in the next step.
+`DB_DATABASE` can be any name you like; the next step creates it if it does not exist.
 
-### 4. Init your database
+### 4. Create the tables and load the demo data
 ```bash
-mysql -u your_mariadb_user -p < init-db.sql
+npm run init-db
 ```
-(Note: Since MariaDB is a drop-in replacement for MySQL, it utilizes the same mysql command-line client.)
+This reads the connection details from your `.env`, creates the database if it does not exist yet, and runs `init-db.sql`.
+⚠️ It drops the existing blog tables first, so only run it on a database you are happy to reset.
 
 ### 5. Run the application
 ```bash
 npm start
 ```
 The server will start, and you can access it at `http://localhost:3000/`.
+
+### 6. Log in with a demo account
+The demo data includes five users, all with the password **`demo1234`**:
+
+| Username | Posts | Comments |
+|---|---|---|
+| `alice` | 4 (2 with images) | yes |
+| `ben` | 2 | yes |
+| `chloe` | 1 | yes |
+| `dan` | – | yes |
+| `emma` | – | yes |
+
+Log in as `alice` to try editing and deleting posts, or as anyone else to comment and like.
+
+> **A note on images:** only the `demo-*` images referenced by `init-db.sql` are kept in this repo.
+> Images uploaded while using the app are user data that belongs with the database, so
+> `public/assets/post-img/` and `public/assets/post-thumbnail/` are git-ignored.
+> The app creates those folders on start, so uploading works right after cloning.
 
 ---
 ## 📝 Credits & Acknowledgments
