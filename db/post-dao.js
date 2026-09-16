@@ -37,6 +37,22 @@ async function retrievePersonalPost(userId) {
     return posts;
 }
 
+// Image file name of a post (null if it has no image, undefined if the post doesn't exist).
+// Used to delete the old image files when a post's image is replaced/removed or the post is deleted.
+async function retrievePostImageName(postId) {
+    const rows = await db.query(`SELECT img_name FROM web_posts WHERE id = ?;`, [postId]);
+    return rows[0]?.img_name;
+}
+
+// Image file names of all posts written by a user (used before deleting the account).
+async function retrieveImageNamesByAuthor(userId) {
+    const rows = await db.query(
+        `SELECT img_name FROM web_posts WHERE author_id = ? AND img_name IS NOT NULL;`,
+        [userId]
+    );
+    return rows.map(row => row.img_name);
+}
+
 // Returns one post (with the author's username and avatar), or undefined if it doesn't exist.
 // Uses the same JOINs as retrieveAllPost, so a post is found here exactly when it appears in the list.
 async function retrievePostById(postId) {
@@ -156,7 +172,7 @@ async function deletePost(postId, userId) {
 }
 
 async function editPost(postId, category, title, content, imgName, userId) {
-    // if new imgName was passed, update the imgName field, otherwise skip it.
+    // imgName: undefined = keep the current image (skip the column), null = remove the image, a string = new image.
     if (imgName !== undefined) {
         const result = await db.query(
             `UPDATE web_posts 
@@ -226,6 +242,8 @@ module.exports = {
     createComment,
     retrievePersonalPost,
     retrievePostById,
+    retrievePostImageName,
+    retrieveImageNamesByAuthor,
     deletePost,
     editPost,
     deleteComment,

@@ -5,6 +5,7 @@ const postDao = require("../db/post-dao.js");
 const userDao = require("../db/users-dao.js");
 const auth = require("../middleware/auth.js");
 const { cleanPostContent } = require("../utils/post-content.js");
+const { POST_IMG_DIR, POST_THUMBNAIL_DIR, deleteImage } = require("../utils/post-images.js");
 
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
@@ -20,8 +21,6 @@ const ALLOWED_IMAGE_TYPES = {
     "image/gif": ".gif",
 };
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-const POST_IMG_DIR = path.join(__dirname, "..", "public", "assets", "post-img");
-const POST_THUMBNAIL_DIR = path.join(__dirname, "..", "public", "assets", "post-thumbnail");
 
 // multer stores uploads in the project-level temp/ folder first (git-ignored), then the route moves them into public/
 const upload = multer({
@@ -67,13 +66,6 @@ async function saveUploadedImage(file) {
     return fileName;
 }
 
-// Remove an image saved by saveUploadedImage (e.g. when the post update fails). Does nothing if fileName is empty.
-function deleteImage(fileName) {
-    if (!fileName) return;
-    fs.rmSync(path.join(POST_IMG_DIR, fileName), { force: true });
-    fs.rmSync(path.join(POST_THUMBNAIL_DIR, fileName), { force: true });
-}
-
 // Check user before every request in this router file. Because routers in this file can only be run when the user log in.
 router.use(auth.verifyAuthenticated);
 
@@ -109,19 +101,26 @@ router.post('/createPost', uploadPostImage, async (req, res) => {
 
 router.post("/editPost/:postId", uploadPostImage, async (req, res) => {
     const postId = req.params.postId;
-    const { category, title, content } = req.body;
+    const { category, title, content, removeImage } = req.body;
     const userId = req.session.user.id;
-    let newImgName = undefined; // set default undefined, which means no need to update img.
+    // undefined = keep the current image, null = remove it, a file name = replace it with a new upload
+    let newImgName = undefined;
     try {
+        // remember the current image, so its files can be deleted if it gets replaced or removed
+        const oldImgName = await postDao.retrievePostImageName(postId);
 
-        // check if any photo was uploaded.
         if (req.file) {
-            newImgName = await saveUploadedImage(req.file); // record new image name.
+            newImgName = await saveUploadedImage(req.file); // a new upload always wins
+        } else if (removeImage === "1") {
+            newImgName = null; // the user clicked the X on the current image
         }
 
-        // if no new image upload, newImgName remain undefined.
         const result = await postDao.editPost(postId, category, title, cleanPostContent(content), newImgName, userId);
         if (result.affectedRows !== 0) {
+            // only delete after the update succeeded (affectedRows > 0 also proves the user owns this post)
+            if (newImgName !== undefined) {
+                deleteImage(oldImgName);
+            }
             console.log("Post successfully edit");
             res.redirect(`/#post-${postId}`);
         } else {
@@ -141,8 +140,10 @@ router.post("/deletePost/:postId", async (req, res) => {
     const postId = req.params.postId;
     const userId = req.session.user.id;
     try {
+        const imgName = await postDao.retrievePostImageName(postId);
         const result = await postDao.deletePost(postId, userId);
         if (result.affectedRows !== 0) {
+            deleteImage(imgName); // the post is gone, so its image files are no longer needed
             res.redirect(`/`);
         } else {
             throw new Error(`Post not found or user ${userId} is not authorized to delete post ${postId}`);
@@ -187,8 +188,11 @@ router.post("/editProfile", async (req, res) => {
 router.post("/deleteAccount", async (req, res) => {
     const userId = req.session.user.id;
     try {
+        // the DB deletes the user's posts automatically (ON DELETE CASCADE), but not the image files on disk
+        const imgNames = await postDao.retrieveImageNamesByAuthor(userId);
         const result = await userDao.deleteUser(userId);
         if (result.affectedRows !== 0) {
+            imgNames.forEach(deleteImage);
             console.log("account delete successfully!")
             req.session.destroy();
             res.redirect("/?message=Account_deleted_successfully!");

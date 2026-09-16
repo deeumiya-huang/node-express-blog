@@ -6,6 +6,7 @@ const postDao = require("../db/post-dao.js");
 const userDao = require("../db/users-dao.js");
 const { createAccessToken, verifyJwt, TOKEN_LIFETIME_SECONDS } = require("../middleware/jwt-auth.js");
 const { cleanPostContent } = require("../utils/post-content.js");
+const { deleteImage } = require("../utils/post-images.js");
 
 // JSON REST API. Unlike the page routes (which handle HTML forms and redirect), every route here
 // returns JSON and uses the HTTP method + status code to describe what happened.
@@ -147,8 +148,10 @@ router.delete("/posts/:id", verifyJwt, async (req, res, next) => {
         const postId = parsePostId(req);
         if (!postId) return res.status(400).json({ error: "id must be a positive integer" });
 
+        const imgName = await postDao.retrievePostImageName(postId);
         const result = await postDao.deletePost(postId, req.apiUser.id);
         if (result.affectedRows === 0) return res.status(404).json({ error: "Post not found" });
+        deleteImage(imgName); // don't leave the deleted post's image on disk
         res.status(204).end(); // 204 No Content: deleted, nothing to return
     } catch (error) {
         next(error);
