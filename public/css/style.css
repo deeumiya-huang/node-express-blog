@@ -610,6 +610,10 @@ a {
         height: 44px;
     }
 
+    .mobile-nav-item.active {
+        color: var(--primary-color);
+    }
+
     /* Pop style for the action button on mobile */
     .btn-add-mobile {
         background-color: var(--primary-color);

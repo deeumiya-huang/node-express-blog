@@ -6,6 +6,7 @@ const auth = require("../middleware/auth.js");
 router.get("/", async (req, res) => {
     try {
         res.locals.user = req.session.user;
+        res.locals.isHomePage = true; // highlights "Home" in the navbars
         let userId = null;
         if (req.session.user) {
             userId = req.session.user.id;
@@ -23,6 +24,7 @@ router.get("/", async (req, res) => {
 router.get("/personalPage",auth.verifyAuthenticated, async (req, res) => {
     try {
         res.locals.user = req.session.user;
+        res.locals.isPersonalPage = true; // highlights "Personal" in the navbars
         const userId = req.session.user.id;
         let posts = await postDao.retrievePersonalPost(userId);
         posts = await getPostsComments(posts, userId);
@@ -40,8 +42,15 @@ async function getPostsComments(posts, userId) {
     posts.forEach(post => {
         post.isAuthor = String(post.author_id) === String(userId);
         post.comments = commentTrees.get(post.id);
+        post.commentCount = countComments(post.comments);
     });
     return posts;
+}
+
+// Count every comment in a comment tree, replies included.
+// Counted from the loaded tree (instead of a stored counter column) so it always matches what is shown.
+function countComments(comments) {
+    return comments.reduce((total, comment) => total + 1 + countComments(comment.comments), 0);
 }
 
 module.exports = router;

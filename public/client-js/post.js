@@ -13,6 +13,8 @@ const categorySelect = document.querySelector('#category');
 const titleInput = document.querySelector('#title');
 const editPostId = postModal.querySelector('#editPostId');
 
+let navItemsActiveBeforeModal = []; // nav items to highlight again when the "New Post" modal closes
+
 const quill = new Quill('#quill-editor', {
     theme: 'snow',
     placeholder: 'Write something amazing ...',
@@ -23,6 +25,21 @@ const quill = new Quill('#quill-editor', {
         ]
     }
 });
+// Highlight "New Post" in the navbars while the create modal is open, and restore the previous highlight after
+function highlightNewPost() {
+    navItemsActiveBeforeModal = [...document.querySelectorAll('.nav-item.active, .mobile-nav-item.active')];
+    navItemsActiveBeforeModal.forEach(item => item.classList.remove('active'));
+    openPostBtn?.classList.add('active');
+    openPostBtn2?.classList.add('active');
+}
+
+function restoreNavHighlight() {
+    openPostBtn?.classList.remove('active');
+    openPostBtn2?.classList.remove('active');
+    navItemsActiveBeforeModal.forEach(item => item.classList.add('active'));
+    navItemsActiveBeforeModal = [];
+}
+
 // null for creat, postData for edit
 const openModal = function (postData = null){
     if (postData) {
@@ -43,6 +60,7 @@ const openModal = function (postData = null){
         modalTitle.textContent = 'Create Post';
         postForm.action = '/createPost';
         editPostId.value = '';
+        highlightNewPost();
     }
     postModal.style.display = 'flex';
 }
@@ -50,6 +68,7 @@ const openModal = function (postData = null){
 const closeModal = function (){
     postModal.style.display = 'none';
     resetPostForm();
+    restoreNavHighlight();
 }
 
 function resetPostForm() {
